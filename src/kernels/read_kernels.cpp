@@ -1,6 +1,6 @@
 #include "common.h"
 
-double kern_seq_read(){
+double r_seq_ind(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for
@@ -10,7 +10,7 @@ double kern_seq_read(){
     return mysecond() - elapsed;
 }
 
-double kern_seq_reduction(){
+double r_seq_reduce(){
     volatile data_t * vol_a = a;
     volatile uint64_t sum = 0;
     double elapsed = mysecond();
@@ -21,7 +21,7 @@ double kern_seq_reduction(){
     return mysecond() - elapsed;
 }
 
-double kern_read_pointer_chasing(){
+double r_rand_pchase(){
     void **curr = ptr;
     void* saved_val = *curr;
     double elapsed = mysecond();
@@ -33,7 +33,7 @@ double kern_read_pointer_chasing(){
     return elapsed;
 }
 
-double kern_rand_read(){
+double r_rand_ind(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for
@@ -44,7 +44,7 @@ double kern_rand_read(){
     return mysecond() - elapsed;
 }
 
-double kern_stride2_read(){
+double r_stride_2(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for
@@ -54,7 +54,7 @@ double kern_stride2_read(){
     return mysecond() - elapsed;
 }
 
-double kern_stride4_read(){
+double r_stride_4(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for
@@ -64,7 +64,7 @@ double kern_stride4_read(){
     return mysecond() - elapsed;
 }
 
-double kern_stride8_read(){
+double r_stride_8(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for
@@ -74,7 +74,7 @@ double kern_stride8_read(){
     return mysecond() - elapsed;
 }
 
-double kern_stride16_read(){
+double r_stride_16(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for
@@ -84,7 +84,7 @@ double kern_stride16_read(){
     return mysecond() - elapsed;
 }
 
-double kern_stride32_read(){
+double r_stride_32(){
     volatile data_t * vol_a = a;
     double elapsed = mysecond();
     #pragma omp parallel for

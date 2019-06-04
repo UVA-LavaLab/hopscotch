@@ -33,7 +33,7 @@ int main(){
     elapsed = run_kernel(&iter, kern_rand_read, default_init);
     printf("Random Read: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);*/
     
-    elapsed = run_kernel(&iter, kern_seq_write, default_init);
+    elapsed = kernel_sum_time(&iter, w_seq_memset, default_init);
     printf("Seq write: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);
     
 	return 0;

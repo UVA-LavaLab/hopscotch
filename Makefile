@@ -10,7 +10,7 @@ KERN_OBJ = $(KERN_SRC:.cpp=.o)
 BENCH_SRC = $(wildcard src/*.cpp)
 BENCH_OBJ = $(BENCH_SRC:.cpp=.o)
 	
-all: preprocess throughput postprocess
+all: preprocess throughput peak_bandwidth postprocess
 	
 clean: postprocess
 	@rm -rf $(BUILD_DIR)/throughput
@@ -26,4 +26,6 @@ postprocess:
 throughput: $(KERN_OBJ) src/hs_throughput.o
 	g++ $(CPPFLAGS) $^ -o $(BUILD_DIR)/$@
 	
+peak_bandwidth: $(KERN_OBJ) src/hs_peak_bandwidth.o
+	g++ $(CPPFLAGS) $^ -o $(BUILD_DIR)/$@
 	

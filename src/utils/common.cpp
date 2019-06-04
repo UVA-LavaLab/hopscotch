@@ -1,5 +1,7 @@
 #include <sys/time.h>
 #include "common.h"
+#include <stdio.h>
+#include <float.h>
 #include <vector>
 #include <algorithm>
 
@@ -18,7 +20,7 @@ double mysecond() {
 	return ( (double) tp.tv_sec + (double) tp.tv_usec * 1.e-6 );
 }
 
-double run_kernel(uint64_t* iter, double (*func)(), void (*init)()) {
+double kernel_sum_time(uint64_t* iter, double (*func)(), void (*init)()) {
     init();
     func();             //warm up
     double elapsed = 0;
@@ -30,17 +32,38 @@ double run_kernel(uint64_t* iter, double (*func)(), void (*init)()) {
     return elapsed;
 }
 
+double kernel_min_time(uint64_t* iter, double (*func)(), void (*init)()) {
+    init();
+    func();             //warm up
+    double elapsed = 0;
+    double min = DBL_MAX;
+    uint64_t i;
+    for(i = 0; (i < ITER_MIN) || (elapsed < ITER_TIMEOUT_SEC); ++i) {
+        double curr = func();
+        min = curr < min ? curr : min;
+        elapsed += curr;
+    }
+    *iter = i;
+    return min;
+}
+
 void no_init(){
     //do nothing
 }
 
 void default_init(){
-    #pragma omp parallel for
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
-        a[i] = 1;
-        //b[i] = 2;
-        //c[i] = 3;
-    }
+    memset(a, 1, HS_ARRAY_SIZE_BTYE);
+    memset(b, 2, HS_ARRAY_SIZE_BTYE);
+    memset(c, 3, HS_ARRAY_SIZE_BTYE);
+}
+
+void init_a(){
+    memset(a, 1, HS_ARRAY_SIZE_BTYE);
+}
+
+void init_ab(){
+    memset(a, 1, HS_ARRAY_SIZE_BTYE);
+    memset(b, 2, HS_ARRAY_SIZE_BTYE);
 }
 
 //init pointer chasing to array 'ptr' with hamiltonian cycle
