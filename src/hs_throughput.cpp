@@ -2,6 +2,7 @@
 #include "stdio.h"
 
 int main(){
+    print_thread_num();
     print_bw_header();
     double elapsed;
     uint64_t iter;
@@ -38,6 +39,9 @@ int main(){
 
     elapsed = kernel_min_time(&iter, w_seq_memset, init_a);
     print_bw("w_seq_memset", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
+    
+    elapsed = kernel_min_time(&iter, w_rand_ind, init_a);
+    print_bw("w_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
     
 	return 0;
 }

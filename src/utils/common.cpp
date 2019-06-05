@@ -4,6 +4,7 @@
 #include <float.h>
 #include <vector>
 #include <algorithm>
+#include <omp.h>
 
 data_t a[HS_ARRAY_ELEM];
 data_t b[HS_ARRAY_ELEM];
@@ -49,6 +50,12 @@ double kernel_min_time(uint64_t* iter, double (*func)(), void (*init)()) {
 
 void no_init(){
     //do nothing
+}
+
+void print_thread_num() {
+    #pragma omp parallel
+    #pragma omp single
+    printf("Number of threads = %d\n", omp_get_num_threads());
 }
 
 void default_init(){

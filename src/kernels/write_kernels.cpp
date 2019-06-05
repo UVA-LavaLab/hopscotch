@@ -1,10 +1,17 @@
 #include "common.h"
-#include <string.h>
+
+using namespace std;
 
 double w_seq_memset(){
     volatile data_t* vol_a = a;
     double elapsed = get_time();
-    memset(a, 7, HS_ARRAY_ELEM * sizeof(data_t));
+    #pragma omp parallel
+    {
+        uint64_t tid = omp_get_thread_num();
+        uint64_t elem_per_thread = HS_ARRAY_ELEM / omp_get_num_threads();
+        uint64_t offset = tid * elem_per_thread;        
+        memset(a + offset, 7, elem_per_thread * sizeof(data_t));
+    }
     return get_time() - elapsed;
 }
 
@@ -14,6 +21,17 @@ double w_seq_fill(){
     #pragma omp parallel for
     for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
         vol_a[i] = 7;
+    }
+    return get_time() - elapsed;
+}
+
+double w_rand_ind(){
+    volatile data_t * vol_a = a;
+    double elapsed = get_time();
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
+        uint64_t idx = ((i * 0xDEADBEEF) ^ 0xC0FFEE0B) % HS_ARRAY_ELEM;
+        vol_a[idx] = 7;
     }
     return get_time() - elapsed;
 }

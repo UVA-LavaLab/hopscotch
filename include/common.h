@@ -1,10 +1,12 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <string.h>
+#include <omp.h>
+#include <algorithm>
 
 typedef uint64_t data_t;
 
@@ -28,11 +30,12 @@ extern void* ptr[HS_ARRAY_ELEM];
 //extern uint64_t idx2[HS_ARRAY_ELEM];
 
 //helper functions for print formatting
-#define print_bw_header()               printf("\n%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");
+#define print_bw_header()               printf("%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");
 #define print_bw(kernel,iter,time,bw)   printf("%-30s%-15lu%-15.2lf%-15.0lf\n",kernel,iter,time,bw);
 
 
 //Forward declarations
+extern void print_thread_num();
 extern double get_time();
 extern void default_init();
 extern void init_a();
@@ -56,6 +59,7 @@ extern double r_stride_32();
 //write kernels
 extern double w_seq_memset();
 extern double w_seq_fill();
+extern double w_rand_ind();
 extern double w_stride_2();
 extern double w_stride_4();
 extern double w_stride_8();
