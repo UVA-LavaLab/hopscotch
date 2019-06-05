@@ -13,7 +13,7 @@ void* ptr[HS_ARRAY_ELEM];
 uint64_t idx1[HS_ARRAY_ELEM];
 uint64_t idx2[HS_ARRAY_ELEM];
 
-double mysecond() {
+double get_time() {
 	struct timeval tp;
 	struct timezone tzp;
 	gettimeofday(&tp,&tzp);

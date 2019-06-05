@@ -33,7 +33,7 @@ extern void* ptr[HS_ARRAY_ELEM];
 
 
 //Forward declarations
-extern double mysecond();
+extern double get_time();
 extern void default_init();
 extern void init_a();
 extern void init_ab();

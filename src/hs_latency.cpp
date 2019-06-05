@@ -5,7 +5,7 @@ int main(){
     uint64_t iter;
     
     elapsed = kernel_sum_time(&iter, r_rand_pchase, init_pointer_chasing);
-    printf("latency: %lf (ns/access)\n", elapsed / iter / HS_ARRAY_ELEM)
+    printf("latency: %lf (ns/access)\n", elapsed / iter / HS_ARRAY_ELEM);
     
     
     

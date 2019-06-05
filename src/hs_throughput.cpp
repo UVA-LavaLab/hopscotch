@@ -2,7 +2,7 @@
 #include "stdio.h"
 
 int main(){
-    printf("Array size: %lu MB\n", HS_ARRAY_SIZE_MB);
+    print_bw_header();
     double elapsed;
     uint64_t iter;
     
@@ -33,8 +33,11 @@ int main(){
     elapsed = run_kernel(&iter, kern_rand_read, default_init);
     printf("Random Read: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);*/
     
-    elapsed = kernel_sum_time(&iter, w_seq_memset, default_init);
-    printf("Seq write: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);
+    elapsed = kernel_min_time(&iter, w_seq_fill, init_a);
+    print_bw("w_seq_fill", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
+
+    elapsed = kernel_min_time(&iter, w_seq_memset, init_a);
+    print_bw("w_seq_memset", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
     
 	return 0;
 }
