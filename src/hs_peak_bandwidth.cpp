@@ -3,6 +3,7 @@
 int main(){
     double elapsed;
     uint64_t iter;
+    alloc_arrays();
     
     print_bw_header();
     

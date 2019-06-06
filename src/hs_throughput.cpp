@@ -2,10 +2,13 @@
 #include "stdio.h"
 
 int main(){
-    print_thread_num();
-    print_bw_header();
     double elapsed;
     uint64_t iter;
+    alloc_arrays();
+    
+    print_thread_num();
+    print_bw_header();
+    
     
     /*elapsed = run_kernel(&iter, kern_seq_read, default_init);
     printf("Seq Read: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);

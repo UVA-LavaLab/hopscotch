@@ -81,3 +81,27 @@ double w_stride_32(){
     return get_time() - elapsed;
 }
 
+double w_tile(uint64_t L, uint64_t K){
+//double w_tile(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; i += K) {
+        for(uint64_t j = 0; j < L; j++) {
+            a[i+j] = 7;
+        }
+    }
+    return get_time() - elapsed;
+}
+
+double w_dma(data_t** addr, uint64_t* len, uint64_t count) {
+    double elapsed = get_time();
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < count; i++) {
+        const uint64_t c_len = len[i];
+        data_t* c_addr = addr[i];
+        for(uint64_t j = 0; j < c_len; j++) {
+            *c_addr++ = 7;
+        }
+    }
+    return get_time() - elapsed;
+}

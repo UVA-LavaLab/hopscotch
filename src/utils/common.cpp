@@ -6,13 +6,24 @@
 #include <algorithm>
 #include <omp.h>
 
-data_t a[HS_ARRAY_ELEM];
-data_t b[HS_ARRAY_ELEM];
-data_t c[HS_ARRAY_ELEM];
-void* ptr[HS_ARRAY_ELEM];
+data_t* a = NULL;
+data_t* b = NULL;
+data_t* c = NULL;
+void** ptr = NULL;
 
-uint64_t idx1[HS_ARRAY_ELEM];
-uint64_t idx2[HS_ARRAY_ELEM];
+//uint64_t idx1[HS_ARRAY_ELEM];
+//uint64_t idx2[HS_ARRAY_ELEM];
+
+void alloc_arrays(){
+    if(a) free(a);
+    if(b) free(b);
+    if(c) free(c);
+    if(ptr) free(ptr);
+    a = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    b = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    c = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    ptr = (void**)malloc(HS_ARRAY_ELEM * sizeof(void*));
+}
 
 double get_time() {
 	struct timeval tp;

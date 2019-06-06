@@ -11,8 +11,20 @@
 typedef uint64_t data_t;
 
 #ifndef HS_ARRAY_ELEM
-#define HS_ARRAY_ELEM       (32*1024*1024UL)
+#define HS_ARRAY_ELEM       (16UL)
+//#define HS_ARRAY_ELEM       (1024UL)
 #endif
+
+//#ifndef HS_TILE_L
+//#define HS_TILE_L           ()
+//#endif
+//
+//#ifndef HS_TILE_K
+//#define HS_TILE_K           ()
+//#endif
+
+
+#define ELEM_MIN            (16*1024*1024UL)
 
 #define ITER_MIN            8
 #define ITER_TIMEOUT_SEC    2
@@ -21,10 +33,10 @@ typedef uint64_t data_t;
 #define HS_ARRAY_SIZE_MB    (HS_ARRAY_SIZE_BTYE/1024/1024)
 
 // Globals
-extern data_t a[HS_ARRAY_ELEM];
-extern data_t b[HS_ARRAY_ELEM];
-extern data_t c[HS_ARRAY_ELEM];
-extern void* ptr[HS_ARRAY_ELEM];
+extern data_t* a;
+extern data_t* b;
+extern data_t* c;
+extern void** ptr;
 
 //extern uint64_t idx1[HS_ARRAY_ELEM];
 //extern uint64_t idx2[HS_ARRAY_ELEM];
@@ -35,6 +47,7 @@ extern void* ptr[HS_ARRAY_ELEM];
 
 
 //Forward declarations
+extern void alloc_arrays();
 extern void print_thread_num();
 extern double get_time();
 extern void default_init();
@@ -69,6 +82,7 @@ extern double w_stride_32();
 //mixed kernels
 extern double rw_seq_memcpy();
 extern double rw_seq_copy();
+extern double rw_seq_rmw();
 
 #endif /* COMMON_H */
 
