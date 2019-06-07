@@ -3,7 +3,7 @@
 int main(){
     double elapsed;
     uint64_t iter;
-    alloc_arrays();
+    alloc_ptr();
     
     elapsed = kernel_sum_time(&iter, r_rand_pchase, init_pointer_chasing);
 #if HS_ARRAY_ELEM < ELEM_MIN
@@ -15,5 +15,7 @@ int main(){
     
     printf("latency: %lf (ns/access)\n", latency);
         
+    free_ptr();
+    
     return 0;
 }

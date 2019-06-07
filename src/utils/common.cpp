@@ -14,15 +14,28 @@ void** ptr = NULL;
 //uint64_t idx1[HS_ARRAY_ELEM];
 //uint64_t idx2[HS_ARRAY_ELEM];
 
-void alloc_arrays(){
-    if(a) free(a);
-    if(b) free(b);
-    if(c) free(c);
-    if(ptr) free(ptr);
+void alloc_a(){
     a = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+}
+
+void alloc_b(){
     b = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
-    c = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+}
+
+void alloc_ptr(){
     ptr = (void**)malloc(HS_ARRAY_ELEM * sizeof(void*));
+}
+
+void free_a(){
+    if(a) free(a);
+}
+
+void free_b() {
+    if(b) free(b);
+}
+
+void free_ptr() {
+    if(ptr) free(ptr);
 }
 
 double get_time() {

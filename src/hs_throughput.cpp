@@ -4,7 +4,7 @@
 int main(){
     double elapsed;
     uint64_t iter;
-    alloc_arrays();
+    alloc_a();
     
     print_thread_num();
     print_bw_header();
@@ -45,6 +45,8 @@ int main(){
     
     elapsed = kernel_min_time(&iter, w_rand_ind, init_a);
     print_bw("w_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
+    
+    free(a);
     
 	return 0;
 }

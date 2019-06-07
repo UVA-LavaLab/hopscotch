@@ -47,7 +47,12 @@ extern void** ptr;
 
 
 //Forward declarations
-extern void alloc_arrays();
+extern void alloc_a();
+extern void free_a();
+extern void alloc_b();
+extern void free_b();
+extern void alloc_ptr();
+extern void free_ptr();
 extern void print_thread_num();
 extern double get_time();
 extern void default_init();
