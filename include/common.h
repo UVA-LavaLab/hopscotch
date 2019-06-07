@@ -85,9 +85,9 @@ extern double w_stride_16();
 extern double w_stride_32();
 
 //mixed kernels
-extern double rw_seq_memcpy();
+extern double rw_seq_scan();
 extern double rw_seq_copy();
-extern double rw_seq_rmw();
+extern double rw_seq_inc();
 
 #endif /* COMMON_H */
 

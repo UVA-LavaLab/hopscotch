@@ -4,38 +4,36 @@
 int main(){
     double elapsed;
     uint64_t iter;
-    alloc_a();
     
-    print_thread_num();
     print_bw_header();
+    print_thread_num();
     
+    alloc_a();
+     
+    //read kernels
+    elapsed = kernel_min_time(&iter, r_seq_ind, init_a);
+    print_bw("r_seq_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
     
-    /*elapsed = run_kernel(&iter, kern_seq_read, default_init);
-    printf("Seq Read: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);
+    elapsed = kernel_min_time(&iter, r_seq_reduce, init_a);
+    print_bw("r_seq_reduce", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
     
-    elapsed = run_kernel(&iter, kern_seq_reduction, default_init);
-    printf("Seq Read (reduction): Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);
+    elapsed = kernel_min_time(&iter, r_rand_ind, init_a);
+    print_bw("r_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
     
-    elapsed = run_kernel(&iter, kern_stride2_read, default_init);
-    printf("Stride 2: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / 2 / elapsed);
+    elapsed = kernel_min_time(&iter, r_stride_2, init_a);
+    print_bw("r_stride_2", iter, elapsed, HS_ARRAY_SIZE_MB / 2 / elapsed);
     
-    elapsed = run_kernel(&iter, kern_stride4_read, default_init);
-    printf("Stride 4: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / 4 / elapsed);
+    elapsed = kernel_min_time(&iter, r_stride_4, init_a);
+    print_bw("r_stride_4", iter, elapsed, HS_ARRAY_SIZE_MB / 4 / elapsed);
     
-    elapsed = run_kernel(&iter, kern_stride8_read, default_init);
-    printf("Stride 8: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / 8 / elapsed);
+    elapsed = kernel_min_time(&iter, r_stride_8, init_a);
+    print_bw("r_stride_8", iter, elapsed, HS_ARRAY_SIZE_MB / 8 / elapsed);
     
-    elapsed = run_kernel(&iter, kern_stride16_read, default_init);
-    printf("Stride 16: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / 16 / elapsed);
+    elapsed = kernel_min_time(&iter, r_stride_16, init_a);
+    print_bw("r_stride_16", iter, elapsed, HS_ARRAY_SIZE_MB / 16 / elapsed);
     
-    elapsed = run_kernel(&iter, kern_stride32_read, default_init);
-    printf("Stride 32: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / 32 / elapsed);
-    
-    elapsed = run_kernel(&iter, kern_read_pointer_chasing, init_pointer_chasing);
-    printf("Pointer-Chasing: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);
-    
-    elapsed = run_kernel(&iter, kern_rand_read, default_init);
-    printf("Random Read: Iterations: %lu\t\tElapsed time: %lf s\t\tRead BW: %0.2lf MB/s\n", iter, elapsed, HS_ARRAY_SIZE_MB * iter / elapsed);*/
+    elapsed = kernel_min_time(&iter, r_stride_32, init_a);
+    print_bw("r_stride_32", iter, elapsed, HS_ARRAY_SIZE_MB / 32 / elapsed);
     
     elapsed = kernel_min_time(&iter, w_seq_fill, init_a);
     print_bw("w_seq_fill", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
@@ -46,7 +44,34 @@ int main(){
     elapsed = kernel_min_time(&iter, w_rand_ind, init_a);
     print_bw("w_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
     
-    free(a);
+    elapsed = kernel_min_time(&iter, w_stride_2, init_a);
+    print_bw("w_stride_2", iter, elapsed, HS_ARRAY_SIZE_MB / 2 / elapsed);
+    
+    elapsed = kernel_min_time(&iter, w_stride_4, init_a);
+    print_bw("w_stride_4", iter, elapsed, HS_ARRAY_SIZE_MB / 4 / elapsed);
+    
+    elapsed = kernel_min_time(&iter, w_stride_8, init_a);
+    print_bw("w_stride_8", iter, elapsed, HS_ARRAY_SIZE_MB / 8 / elapsed);
+    
+    elapsed = kernel_min_time(&iter, w_stride_16, init_a);
+    print_bw("w_stride_16", iter, elapsed, HS_ARRAY_SIZE_MB / 16 / elapsed);
+    
+    elapsed = kernel_min_time(&iter, w_stride_32, init_a);
+    print_bw("w_stride_32", iter, elapsed, HS_ARRAY_SIZE_MB / 32 / elapsed);
+    
+    alloc_b();
+    
+    elapsed = kernel_min_time(&iter, rw_seq_copy, init_ab);
+    print_bw("rw_seq_copy", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
+    
+    elapsed = kernel_min_time(&iter, rw_seq_inc, init_a);
+    print_bw("rw_seq_inc", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
+    
+    elapsed = kernel_min_time(&iter, rw_seq_scan, init_a);
+    print_bw("rw_seq_scan", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
+    
+    free_a();
+    free_b();
     
 	return 0;
 }

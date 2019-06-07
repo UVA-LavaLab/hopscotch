@@ -21,8 +21,8 @@ int main(){
     
     alloc_b();
     
-    elapsed = kernel_min_time(&iter, rw_seq_memcpy, init_ab);
-    print_bw("rw_seq_memcpy", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
+    //elapsed = kernel_min_time(&iter, rw_seq_memcpy, init_ab);
+    //print_bw("rw_seq_memcpy", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
     
     elapsed = kernel_min_time(&iter, rw_seq_copy, init_ab);
     print_bw("rw_seq_copy", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
