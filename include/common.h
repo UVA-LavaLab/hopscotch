@@ -26,7 +26,7 @@ typedef uint64_t data_t;
 
 #define ELEM_MIN            (16*1024*1024UL)
 
-#define ITER_MIN            8
+#define ITER_MIN            1
 #define ITER_TIMEOUT_SEC    2
 
 #define HS_ARRAY_SIZE_BTYE  (sizeof(data_t)*HS_ARRAY_ELEM)
