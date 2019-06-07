@@ -28,4 +28,29 @@ double rw_seq_scan(){
     return get_time() - elapsed;
 }
 
+double rw_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[i] = b[idx1[i]];
+    }
+    return get_time() - elapsed;
+}
 
+double rw_scatter(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[idx1[i]] = b[i];
+    }
+    return get_time() - elapsed;
+}
+
+double rw_scatter_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[idx1[i]] = b[idx2[i]];
+    }
+    return get_time() - elapsed;
+}

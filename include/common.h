@@ -35,11 +35,9 @@ typedef uint64_t data_t;
 // Globals
 extern data_t* a;
 extern data_t* b;
-extern data_t* c;
 extern void** ptr;
-
-//extern uint64_t idx1[HS_ARRAY_ELEM];
-//extern uint64_t idx2[HS_ARRAY_ELEM];
+extern uint64_t* idx1;
+extern uint64_t* idx2;
 
 //helper functions for print formatting
 #define print_bw_header()               printf("%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");
@@ -53,12 +51,18 @@ extern void alloc_b();
 extern void free_b();
 extern void alloc_ptr();
 extern void free_ptr();
+extern void alloc_idx1();
+extern void free_idx1();
+extern void alloc_idx2();
+extern void free_idx2();
 extern void print_thread_num();
 extern double get_time();
 extern void default_init();
 extern void init_a();
 extern void init_ab();
 extern void no_init();
+extern void init_idx1();
+extern void init_idx12();
 extern void init_pointer_chasing();
 extern double kernel_sum_time(uint64_t* iter, double (*func)(), void (*init)());
 extern double kernel_min_time(uint64_t* iter, double (*func)(), void (*init)());
@@ -88,6 +92,9 @@ extern double w_stride_32();
 extern double rw_seq_scan();
 extern double rw_seq_copy();
 extern double rw_seq_inc();
+extern double rw_scatter();
+extern double rw_gather();
+extern double rw_scatter_gather();
 
 #endif /* COMMON_H */
 

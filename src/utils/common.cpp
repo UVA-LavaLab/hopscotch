@@ -10,9 +10,8 @@ data_t* a = NULL;
 data_t* b = NULL;
 data_t* c = NULL;
 void** ptr = NULL;
-
-//uint64_t idx1[HS_ARRAY_ELEM];
-//uint64_t idx2[HS_ARRAY_ELEM];
+uint64_t* idx1 = NULL;
+uint64_t* idx2 = NULL;
 
 void alloc_a(){
     a = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
@@ -26,6 +25,14 @@ void alloc_ptr(){
     ptr = (void**)malloc(HS_ARRAY_ELEM * sizeof(void*));
 }
 
+void alloc_idx1(){
+    idx1 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
+}
+
+void alloc_idx2(){
+    idx2 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
+}
+
 void free_a(){
     if(a) free(a);
 }
@@ -36,6 +43,14 @@ void free_b() {
 
 void free_ptr() {
     if(ptr) free(ptr);
+}
+
+void free_idx1(){
+    if(idx1) free(idx1);
+}
+
+void free_idx2(){
+    if(idx2) free(idx2);
 }
 
 double get_time() {
@@ -111,4 +126,22 @@ void init_pointer_chasing() {
         curr = (void**)unused[i];
     }
     *curr = ptr;
+}
+
+void init_idx1(){
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
+        idx1[i] = i;
+    }
+    std::random_shuffle(idx1, idx1 + HS_ARRAY_ELEM);
+}
+
+void init_idx12(){
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
+        idx1[i] = i;
+        idx2[i] = i;
+    }
+    std::random_shuffle(idx1, idx1 + HS_ARRAY_ELEM);
+    std::random_shuffle(idx2, idx2 + HS_ARRAY_ELEM);
 }

@@ -4,11 +4,11 @@
 int main(){
     double elapsed;
     uint64_t iter;
-    
-    print_bw_header();
     print_thread_num();
+    print_bw_header();
     
-    alloc_a();
+    
+    /*alloc_a();
      
     //read kernels
     elapsed = kernel_min_time(&iter, r_seq_ind, init_a);
@@ -71,7 +71,32 @@ int main(){
     print_bw("rw_seq_scan", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
     
     free_a();
+    free_b();*/
+    
+    alloc_a();
+    alloc_b();
+    alloc_idx1();
+    
+    init_ab();
+    init_idx1();
+    elapsed = kernel_min_time(&iter, rw_scatter, no_init);
+    print_bw("rw_scatter", iter, elapsed, HS_ARRAY_SIZE_MB * 3 / elapsed);
+    
+    init_ab();
+    init_idx1();
+    elapsed = kernel_min_time(&iter, rw_gather, no_init);
+    print_bw("rw_gather", iter, elapsed, HS_ARRAY_SIZE_MB * 3 / elapsed);
+    
+    alloc_idx2();
+    init_ab();
+    init_idx12();
+    elapsed = kernel_min_time(&iter, rw_scatter_gather, no_init);
+    print_bw("rw_scatter_gather", iter, elapsed, HS_ARRAY_SIZE_MB * 4 / elapsed);
+    
+    free_a();
     free_b();
+    free_idx1();
+    free_idx2();
     
 	return 0;
 }
