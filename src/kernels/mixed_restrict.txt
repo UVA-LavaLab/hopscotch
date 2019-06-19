@@ -1,0 +1,676 @@
+
+mixed_kernels.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <rw_seq_copy() [clone ._omp_fn.0]>:
+#include "common.h"
+#include <string.h>
+
+double rw_seq_copy(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+   0:	53                   	push   rbx
+   1:	e8 00 00 00 00       	call   6 <rw_seq_copy() [clone ._omp_fn.0]+0x6>	2: R_X86_64_PC32	omp_get_num_threads-0x4
+   6:	48 63 d8             	movsxd rbx,eax
+   9:	e8 00 00 00 00       	call   e <rw_seq_copy() [clone ._omp_fn.0]+0xe>	a: R_X86_64_PC32	omp_get_thread_num-0x4
+   e:	31 d2                	xor    edx,edx
+  10:	48 63 c8             	movsxd rcx,eax
+  13:	b8 00 00 00 04       	mov    eax,0x4000000
+  18:	48 f7 f3             	div    rbx
+  1b:	48 39 d1             	cmp    rcx,rdx
+  1e:	73 06                	jae    26 <rw_seq_copy() [clone ._omp_fn.0]+0x26>
+  20:	48 83 c0 01          	add    rax,0x1
+  24:	31 d2                	xor    edx,edx
+  26:	48 0f af c8          	imul   rcx,rax
+  2a:	48 01 ca             	add    rdx,rcx
+  2d:	48 8d 0c 10          	lea    rcx,[rax+rdx*1]
+  31:	48 39 ca             	cmp    rdx,rcx
+  34:	73 2a                	jae    60 <rw_seq_copy() [clone ._omp_fn.0]+0x60>
+  36:	48 8d 34 d5 00 00 00 00 	lea    rsi,[rdx*8+0x0]
+  3e:	48 8d 14 c5 00 00 00 00 	lea    rdx,[rax*8+0x0]
+  46:	5b                   	pop    rbx
+  47:	48 89 f7             	mov    rdi,rsi
+  4a:	48 03 35 00 00 00 00 	add    rsi,QWORD PTR [rip+0x0]        # 51 <rw_seq_copy() [clone ._omp_fn.0]+0x51>	4d: R_X86_64_PC32	b-0x4
+  51:	48 03 3d 00 00 00 00 	add    rdi,QWORD PTR [rip+0x0]        # 58 <rw_seq_copy() [clone ._omp_fn.0]+0x58>	54: R_X86_64_PC32	a-0x4
+  58:	e9 00 00 00 00       	jmp    5d <rw_seq_copy() [clone ._omp_fn.0]+0x5d>	59: R_X86_64_PC32	memcpy-0x4
+  5d:	0f 1f 00             	nop    DWORD PTR [rax]
+  60:	5b                   	pop    rbx
+  61:	c3                   	ret    
+  62:	0f 1f 40 00          	nop    DWORD PTR [rax+0x0]
+  66:	66 2e 0f 1f 84 00 00 00 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
+
+0000000000000070 <rw_seq_inc() [clone ._omp_fn.1]>:
+    return get_time() - elapsed;
+}
+
+double rw_seq_inc(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+  70:	4c 8d 54 24 08       	lea    r10,[rsp+0x8]
+  75:	48 83 e4 e0          	and    rsp,0xffffffffffffffe0
+  79:	41 ff 72 f8          	push   QWORD PTR [r10-0x8]
+  7d:	55                   	push   rbp
+  7e:	48 89 e5             	mov    rbp,rsp
+  81:	41 52                	push   r10
+  83:	53                   	push   rbx
+  84:	e8 00 00 00 00       	call   89 <rw_seq_inc() [clone ._omp_fn.1]+0x19>	85: R_X86_64_PC32	omp_get_num_threads-0x4
+  89:	48 63 d8             	movsxd rbx,eax
+  8c:	e8 00 00 00 00       	call   91 <rw_seq_inc() [clone ._omp_fn.1]+0x21>	8d: R_X86_64_PC32	omp_get_thread_num-0x4
+  91:	31 d2                	xor    edx,edx
+  93:	48 63 c8             	movsxd rcx,eax
+  96:	b8 00 00 00 04       	mov    eax,0x4000000
+  9b:	48 f7 f3             	div    rbx
+  9e:	48 39 d1             	cmp    rcx,rdx
+  a1:	73 06                	jae    a9 <rw_seq_inc() [clone ._omp_fn.1]+0x39>
+  a3:	48 83 c0 01          	add    rax,0x1
+  a7:	31 d2                	xor    edx,edx
+  a9:	48 0f af c8          	imul   rcx,rax
+  ad:	48 01 ca             	add    rdx,rcx
+  b0:	4c 8d 0c 10          	lea    r9,[rax+rdx*1]
+  b4:	4c 39 ca             	cmp    rdx,r9
+  b7:	0f 83 ea 00 00 00    	jae    1a7 <rw_seq_inc() [clone ._omp_fn.1]+0x137>
+  bd:	48 8b 3d 00 00 00 00 	mov    rdi,QWORD PTR [rip+0x0]        # c4 <rw_seq_inc() [clone ._omp_fn.1]+0x54>	c0: R_X86_64_PC32	a-0x4
+  c4:	48 8d 34 d7          	lea    rsi,[rdi+rdx*8]
+  c8:	48 89 f1             	mov    rcx,rsi
+  cb:	83 e1 1f             	and    ecx,0x1f
+  ce:	48 c1 e9 03          	shr    rcx,0x3
+  d2:	48 f7 d9             	neg    rcx
+  d5:	83 e1 03             	and    ecx,0x3
+  d8:	48 39 c1             	cmp    rcx,rax
+  db:	48 0f 47 c8          	cmova  rcx,rax
+  df:	48 83 f8 04          	cmp    rax,0x4
+  e3:	48 0f 46 c8          	cmovbe rcx,rax
+  e7:	48 85 c9             	test   rcx,rcx
+  ea:	0f 84 c0 00 00 00    	je     1b0 <rw_seq_inc() [clone ._omp_fn.1]+0x140>
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
+        a[i]++;
+  f0:	48 83 06 01          	add    QWORD PTR [rsi],0x1
+  f4:	48 83 f9 01          	cmp    rcx,0x1
+  f8:	48 8d 72 01          	lea    rsi,[rdx+0x1]
+  fc:	74 27                	je     125 <rw_seq_inc() [clone ._omp_fn.1]+0xb5>
+  fe:	48 83 04 f7 01       	add    QWORD PTR [rdi+rsi*8],0x1
+ 103:	48 83 f9 02          	cmp    rcx,0x2
+ 107:	48 8d 72 02          	lea    rsi,[rdx+0x2]
+ 10b:	74 18                	je     125 <rw_seq_inc() [clone ._omp_fn.1]+0xb5>
+ 10d:	48 83 04 f7 01       	add    QWORD PTR [rdi+rsi*8],0x1
+ 112:	48 83 f9 04          	cmp    rcx,0x4
+ 116:	48 8d 72 03          	lea    rsi,[rdx+0x3]
+ 11a:	75 09                	jne    125 <rw_seq_inc() [clone ._omp_fn.1]+0xb5>
+ 11c:	48 83 04 f7 01       	add    QWORD PTR [rdi+rsi*8],0x1
+ 121:	48 8d 72 04          	lea    rsi,[rdx+0x4]
+ 125:	48 39 c8             	cmp    rax,rcx
+ 128:	74 7d                	je     1a7 <rw_seq_inc() [clone ._omp_fn.1]+0x137>
+ 12a:	49 89 c2             	mov    r10,rax
+ 12d:	48 83 e8 01          	sub    rax,0x1
+ 131:	49 29 ca             	sub    r10,rcx
+ 134:	48 29 c8             	sub    rax,rcx
+ 137:	4d 8d 42 fc          	lea    r8,[r10-0x4]
+ 13b:	49 c1 e8 02          	shr    r8,0x2
+ 13f:	49 83 c0 01          	add    r8,0x1
+ 143:	48 83 f8 02          	cmp    rax,0x2
+ 147:	4e 8d 1c 85 00 00 00 00 	lea    r11,[r8*4+0x0]
+ 14f:	76 35                	jbe    186 <rw_seq_inc() [clone ._omp_fn.1]+0x116>
+ 151:	48 01 ca             	add    rdx,rcx
+ 154:	c5 fd 6f 0d 00 00 00 00 	vmovdqa ymm1,YMMWORD PTR [rip+0x0]        # 15c <rw_seq_inc() [clone ._omp_fn.1]+0xec>	158: R_X86_64_PC32	.LC1-0x4
+    return get_time() - elapsed;
+}
+
+double rw_seq_inc(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 15c:	31 c0                	xor    eax,eax
+ 15e:	48 8d 0c d7          	lea    rcx,[rdi+rdx*8]
+ 162:	31 d2                	xor    edx,edx
+ 164:	48 83 c2 01          	add    rdx,0x1
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
+        a[i]++;
+ 168:	c5 f5 d4 04 01       	vpaddq ymm0,ymm1,YMMWORD PTR [rcx+rax*1]
+ 16d:	c5 fd 7f 04 01       	vmovdqa YMMWORD PTR [rcx+rax*1],ymm0
+ 172:	48 83 c0 20          	add    rax,0x20
+ 176:	49 39 d0             	cmp    r8,rdx
+ 179:	77 e9                	ja     164 <rw_seq_inc() [clone ._omp_fn.1]+0xf4>
+ 17b:	4c 01 de             	add    rsi,r11
+ 17e:	4d 39 da             	cmp    r10,r11
+ 181:	74 3d                	je     1c0 <rw_seq_inc() [clone ._omp_fn.1]+0x150>
+ 183:	c5 f8 77             	vzeroupper 
+ 186:	48 8d 46 01          	lea    rax,[rsi+0x1]
+ 18a:	48 83 04 f7 01       	add    QWORD PTR [rdi+rsi*8],0x1
+ 18f:	49 39 c1             	cmp    r9,rax
+ 192:	76 13                	jbe    1a7 <rw_seq_inc() [clone ._omp_fn.1]+0x137>
+ 194:	48 83 c6 02          	add    rsi,0x2
+ 198:	48 83 04 c7 01       	add    QWORD PTR [rdi+rax*8],0x1
+ 19d:	49 39 f1             	cmp    r9,rsi
+ 1a0:	76 05                	jbe    1a7 <rw_seq_inc() [clone ._omp_fn.1]+0x137>
+ 1a2:	48 83 04 f7 01       	add    QWORD PTR [rdi+rsi*8],0x1
+    return get_time() - elapsed;
+}
+
+double rw_seq_inc(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 1a7:	5b                   	pop    rbx
+ 1a8:	41 5a                	pop    r10
+ 1aa:	5d                   	pop    rbp
+ 1ab:	49 8d 62 f8          	lea    rsp,[r10-0x8]
+ 1af:	c3                   	ret    
+ 1b0:	48 89 d6             	mov    rsi,rdx
+ 1b3:	e9 72 ff ff ff       	jmp    12a <rw_seq_inc() [clone ._omp_fn.1]+0xba>
+ 1b8:	0f 1f 84 00 00 00 00 00 	nop    DWORD PTR [rax+rax*1+0x0]
+ 1c0:	c5 f8 77             	vzeroupper 
+ 1c3:	5b                   	pop    rbx
+ 1c4:	41 5a                	pop    r10
+ 1c6:	5d                   	pop    rbp
+ 1c7:	49 8d 62 f8          	lea    rsp,[r10-0x8]
+ 1cb:	c3                   	ret    
+ 1cc:	0f 1f 40 00          	nop    DWORD PTR [rax+0x0]
+
+00000000000001d0 <rw_seq_scan() [clone ._omp_fn.2]>:
+    return get_time() - elapsed;
+}
+
+double rw_seq_scan(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 1d0:	53                   	push   rbx
+ 1d1:	e8 00 00 00 00       	call   1d6 <rw_seq_scan() [clone ._omp_fn.2]+0x6>	1d2: R_X86_64_PC32	omp_get_num_threads-0x4
+ 1d6:	48 63 d8             	movsxd rbx,eax
+ 1d9:	e8 00 00 00 00       	call   1de <rw_seq_scan() [clone ._omp_fn.2]+0xe>	1da: R_X86_64_PC32	omp_get_thread_num-0x4
+ 1de:	31 d2                	xor    edx,edx
+ 1e0:	48 63 c8             	movsxd rcx,eax
+ 1e3:	b8 ff ff ff 03       	mov    eax,0x3ffffff
+ 1e8:	48 f7 f3             	div    rbx
+ 1eb:	48 39 d1             	cmp    rcx,rdx
+ 1ee:	73 06                	jae    1f6 <rw_seq_scan() [clone ._omp_fn.2]+0x26>
+ 1f0:	48 83 c0 01          	add    rax,0x1
+ 1f4:	31 d2                	xor    edx,edx
+ 1f6:	48 0f af c8          	imul   rcx,rax
+ 1fa:	48 01 ca             	add    rdx,rcx
+ 1fd:	48 01 d0             	add    rax,rdx
+ 200:	48 39 c2             	cmp    rdx,rax
+ 203:	73 2c                	jae    231 <rw_seq_scan() [clone ._omp_fn.2]+0x61>
+ 205:	48 8b 3d 00 00 00 00 	mov    rdi,QWORD PTR [rip+0x0]        # 20c <rw_seq_scan() [clone ._omp_fn.2]+0x3c>	208: R_X86_64_PC32	a-0x4
+ 20c:	48 8d 4a 01          	lea    rcx,[rdx+0x1]
+ 210:	48 8d 70 01          	lea    rsi,[rax+0x1]
+ 214:	48 8b 14 d7          	mov    rdx,QWORD PTR [rdi+rdx*8]
+ 218:	0f 1f 84 00 00 00 00 00 	nop    DWORD PTR [rax+rax*1+0x0]
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[i] += a[i-1];
+ 220:	48 03 14 cf          	add    rdx,QWORD PTR [rdi+rcx*8]
+ 224:	48 89 14 cf          	mov    QWORD PTR [rdi+rcx*8],rdx
+ 228:	48 83 c1 01          	add    rcx,0x1
+ 22c:	48 39 ce             	cmp    rsi,rcx
+ 22f:	77 ef                	ja     220 <rw_seq_scan() [clone ._omp_fn.2]+0x50>
+    return get_time() - elapsed;
+}
+
+double rw_seq_scan(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 231:	5b                   	pop    rbx
+ 232:	c3                   	ret    
+ 233:	0f 1f 00             	nop    DWORD PTR [rax]
+ 236:	66 2e 0f 1f 84 00 00 00 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
+
+0000000000000240 <rw_gather() [clone ._omp_fn.3]>:
+    return get_time() - elapsed;
+}
+
+double rw_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 240:	4c 8d 54 24 08       	lea    r10,[rsp+0x8]
+ 245:	48 83 e4 e0          	and    rsp,0xffffffffffffffe0
+ 249:	41 ff 72 f8          	push   QWORD PTR [r10-0x8]
+ 24d:	55                   	push   rbp
+ 24e:	48 89 e5             	mov    rbp,rsp
+ 251:	41 56                	push   r14
+ 253:	41 55                	push   r13
+ 255:	41 54                	push   r12
+ 257:	41 52                	push   r10
+ 259:	53                   	push   rbx
+ 25a:	48 83 ec 08          	sub    rsp,0x8
+ 25e:	e8 00 00 00 00       	call   263 <rw_gather() [clone ._omp_fn.3]+0x23>	25f: R_X86_64_PC32	omp_get_num_threads-0x4
+ 263:	48 63 d8             	movsxd rbx,eax
+ 266:	e8 00 00 00 00       	call   26b <rw_gather() [clone ._omp_fn.3]+0x2b>	267: R_X86_64_PC32	omp_get_thread_num-0x4
+ 26b:	31 d2                	xor    edx,edx
+ 26d:	48 63 c8             	movsxd rcx,eax
+ 270:	b8 ff ff ff 03       	mov    eax,0x3ffffff
+ 275:	48 f7 f3             	div    rbx
+ 278:	48 39 d1             	cmp    rcx,rdx
+ 27b:	73 06                	jae    283 <rw_gather() [clone ._omp_fn.3]+0x43>
+ 27d:	48 83 c0 01          	add    rax,0x1
+ 281:	31 d2                	xor    edx,edx
+ 283:	48 0f af c8          	imul   rcx,rax
+ 287:	4c 8d 04 0a          	lea    r8,[rdx+rcx*1]
+ 28b:	4e 8d 0c 00          	lea    r9,[rax+r8*1]
+ 28f:	4d 39 c8             	cmp    r8,r9
+ 292:	0f 83 5f 01 00 00    	jae    3f7 <rw_gather() [clone ._omp_fn.3]+0x1b7>
+ 298:	4c 8b 15 00 00 00 00 	mov    r10,QWORD PTR [rip+0x0]        # 29f <rw_gather() [clone ._omp_fn.3]+0x5f>	29b: R_X86_64_PC32	idx1-0x4
+ 29f:	49 8d 70 01          	lea    rsi,[r8+0x1]
+ 2a3:	4d 8d 60 02          	lea    r12,[r8+0x2]
+ 2a7:	49 83 c1 01          	add    r9,0x1
+ 2ab:	bf 01 00 00 00       	mov    edi,0x1
+ 2b0:	48 8b 1d 00 00 00 00 	mov    rbx,QWORD PTR [rip+0x0]        # 2b7 <rw_gather() [clone ._omp_fn.3]+0x77>	2b3: R_X86_64_PC32	a-0x4
+ 2b7:	4d 39 e1             	cmp    r9,r12
+ 2ba:	4c 8b 1d 00 00 00 00 	mov    r11,QWORD PTR [rip+0x0]        # 2c1 <rw_gather() [clone ._omp_fn.3]+0x81>	2bd: R_X86_64_PC32	b-0x4
+ 2c1:	49 89 f5             	mov    r13,rsi
+ 2c4:	49 8d 0c f2          	lea    rcx,[r10+rsi*8]
+ 2c8:	48 0f 43 f8          	cmovae rdi,rax
+ 2cc:	83 e1 1f             	and    ecx,0x1f
+ 2cf:	48 c1 e9 03          	shr    rcx,0x3
+ 2d3:	48 f7 d9             	neg    rcx
+ 2d6:	83 e1 03             	and    ecx,0x3
+ 2d9:	48 39 f9             	cmp    rcx,rdi
+ 2dc:	48 0f 47 cf          	cmova  rcx,rdi
+ 2e0:	48 83 ff 04          	cmp    rdi,0x4
+ 2e4:	48 0f 46 cf          	cmovbe rcx,rdi
+ 2e8:	48 85 c9             	test   rcx,rcx
+ 2eb:	74 5a                	je     347 <rw_gather() [clone ._omp_fn.3]+0x107>
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[i] = b[idx1[i]];
+ 2ed:	49 8b 14 f2          	mov    rdx,QWORD PTR [r10+rsi*8]
+ 2f1:	48 83 f9 01          	cmp    rcx,0x1
+ 2f5:	49 8b 14 d3          	mov    rdx,QWORD PTR [r11+rdx*8]
+ 2f9:	48 89 14 f3          	mov    QWORD PTR [rbx+rsi*8],rdx
+ 2fd:	4c 89 e6             	mov    rsi,r12
+ 300:	74 3c                	je     33e <rw_gather() [clone ._omp_fn.3]+0xfe>
+ 302:	4b 8b 14 e2          	mov    rdx,QWORD PTR [r10+r12*8]
+ 306:	48 83 f9 02          	cmp    rcx,0x2
+ 30a:	49 8d 70 03          	lea    rsi,[r8+0x3]
+ 30e:	49 8b 14 d3          	mov    rdx,QWORD PTR [r11+rdx*8]
+ 312:	4a 89 14 e3          	mov    QWORD PTR [rbx+r12*8],rdx
+ 316:	74 26                	je     33e <rw_gather() [clone ._omp_fn.3]+0xfe>
+ 318:	49 8b 14 f2          	mov    rdx,QWORD PTR [r10+rsi*8]
+ 31c:	48 83 f9 04          	cmp    rcx,0x4
+ 320:	49 8b 14 d3          	mov    rdx,QWORD PTR [r11+rdx*8]
+ 324:	48 89 14 f3          	mov    QWORD PTR [rbx+rsi*8],rdx
+ 328:	49 8d 70 04          	lea    rsi,[r8+0x4]
+ 32c:	75 10                	jne    33e <rw_gather() [clone ._omp_fn.3]+0xfe>
+ 32e:	49 8b 14 f2          	mov    rdx,QWORD PTR [r10+rsi*8]
+ 332:	49 8b 14 d3          	mov    rdx,QWORD PTR [r11+rdx*8]
+ 336:	48 89 14 f3          	mov    QWORD PTR [rbx+rsi*8],rdx
+ 33a:	49 8d 70 05          	lea    rsi,[r8+0x5]
+ 33e:	48 39 f9             	cmp    rcx,rdi
+ 341:	0f 84 b0 00 00 00    	je     3f7 <rw_gather() [clone ._omp_fn.3]+0x1b7>
+ 347:	48 29 cf             	sub    rdi,rcx
+ 34a:	48 83 e8 01          	sub    rax,0x1
+ 34e:	ba 00 00 00 00       	mov    edx,0x0
+ 353:	4c 8d 47 fc          	lea    r8,[rdi-0x4]
+ 357:	49 c1 e8 02          	shr    r8,0x2
+ 35b:	49 83 c0 01          	add    r8,0x1
+ 35f:	4d 39 e1             	cmp    r9,r12
+ 362:	48 0f 42 c2          	cmovb  rax,rdx
+ 366:	4e 8d 34 85 00 00 00 00 	lea    r14,[r8*4+0x0]
+ 36e:	48 29 c8             	sub    rax,rcx
+ 371:	48 83 f8 02          	cmp    rax,0x2
+ 375:	76 4a                	jbe    3c1 <rw_gather() [clone ._omp_fn.3]+0x181>
+ 377:	4a 8d 04 29          	lea    rax,[rcx+r13*1]
+ 37b:	c5 ed 76 d2          	vpcmpeqd ymm2,ymm2,ymm2
+    return get_time() - elapsed;
+}
+
+double rw_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 37f:	31 c9                	xor    ecx,ecx
+ 381:	48 c1 e0 03          	shl    rax,0x3
+ 385:	4d 8d 24 02          	lea    r12,[r10+rax*1]
+ 389:	48 01 d8             	add    rax,rbx
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[i] = b[idx1[i]];
+ 38c:	c4 c1 7d 6f 0c 14    	vmovdqa ymm1,YMMWORD PTR [r12+rdx*1]
+ 392:	c5 fd 6f da          	vmovdqa ymm3,ymm2
+ 396:	48 83 c1 01          	add    rcx,0x1
+ 39a:	c4 c2 e5 91 04 cb    	vpgatherqq ymm0,QWORD PTR [r11+ymm1*8],ymm3
+ 3a0:	c5 f8 11 04 10       	vmovups XMMWORD PTR [rax+rdx*1],xmm0
+ 3a5:	c4 e3 7d 39 44 10 10 01 	vextracti128 XMMWORD PTR [rax+rdx*1+0x10],ymm0,0x1
+ 3ad:	48 83 c2 20          	add    rdx,0x20
+ 3b1:	49 39 c8             	cmp    r8,rcx
+ 3b4:	77 d6                	ja     38c <rw_gather() [clone ._omp_fn.3]+0x14c>
+ 3b6:	4c 01 f6             	add    rsi,r14
+ 3b9:	4c 39 f7             	cmp    rdi,r14
+ 3bc:	74 52                	je     410 <rw_gather() [clone ._omp_fn.3]+0x1d0>
+ 3be:	c5 f8 77             	vzeroupper 
+ 3c1:	49 8b 04 f2          	mov    rax,QWORD PTR [r10+rsi*8]
+ 3c5:	49 8b 04 c3          	mov    rax,QWORD PTR [r11+rax*8]
+ 3c9:	48 89 04 f3          	mov    QWORD PTR [rbx+rsi*8],rax
+ 3cd:	48 8d 46 01          	lea    rax,[rsi+0x1]
+ 3d1:	49 39 c1             	cmp    r9,rax
+ 3d4:	76 21                	jbe    3f7 <rw_gather() [clone ._omp_fn.3]+0x1b7>
+ 3d6:	49 8b 14 c2          	mov    rdx,QWORD PTR [r10+rax*8]
+ 3da:	49 8b 14 d3          	mov    rdx,QWORD PTR [r11+rdx*8]
+ 3de:	48 89 14 c3          	mov    QWORD PTR [rbx+rax*8],rdx
+ 3e2:	48 8d 46 02          	lea    rax,[rsi+0x2]
+ 3e6:	49 39 c1             	cmp    r9,rax
+ 3e9:	76 0c                	jbe    3f7 <rw_gather() [clone ._omp_fn.3]+0x1b7>
+ 3eb:	49 8b 14 c2          	mov    rdx,QWORD PTR [r10+rax*8]
+ 3ef:	49 8b 14 d3          	mov    rdx,QWORD PTR [r11+rdx*8]
+ 3f3:	48 89 14 c3          	mov    QWORD PTR [rbx+rax*8],rdx
+    return get_time() - elapsed;
+}
+
+double rw_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 3f7:	48 83 c4 08          	add    rsp,0x8
+ 3fb:	5b                   	pop    rbx
+ 3fc:	41 5a                	pop    r10
+ 3fe:	41 5c                	pop    r12
+ 400:	41 5d                	pop    r13
+ 402:	41 5e                	pop    r14
+ 404:	5d                   	pop    rbp
+ 405:	49 8d 62 f8          	lea    rsp,[r10-0x8]
+ 409:	c3                   	ret    
+ 40a:	66 0f 1f 44 00 00    	nop    WORD PTR [rax+rax*1+0x0]
+ 410:	c5 f8 77             	vzeroupper 
+ 413:	eb e2                	jmp    3f7 <rw_gather() [clone ._omp_fn.3]+0x1b7>
+ 415:	90                   	nop
+ 416:	66 2e 0f 1f 84 00 00 00 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
+
+0000000000000420 <rw_scatter() [clone ._omp_fn.4]>:
+    return get_time() - elapsed;
+}
+
+double rw_scatter(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 420:	53                   	push   rbx
+ 421:	e8 00 00 00 00       	call   426 <rw_scatter() [clone ._omp_fn.4]+0x6>	422: R_X86_64_PC32	omp_get_num_threads-0x4
+ 426:	48 63 d8             	movsxd rbx,eax
+ 429:	e8 00 00 00 00       	call   42e <rw_scatter() [clone ._omp_fn.4]+0xe>	42a: R_X86_64_PC32	omp_get_thread_num-0x4
+ 42e:	31 d2                	xor    edx,edx
+ 430:	48 63 c8             	movsxd rcx,eax
+ 433:	b8 ff ff ff 03       	mov    eax,0x3ffffff
+ 438:	48 f7 f3             	div    rbx
+ 43b:	48 39 d1             	cmp    rcx,rdx
+ 43e:	73 06                	jae    446 <rw_scatter() [clone ._omp_fn.4]+0x26>
+ 440:	48 83 c0 01          	add    rax,0x1
+ 444:	31 d2                	xor    edx,edx
+ 446:	48 0f af c8          	imul   rcx,rax
+ 44a:	48 01 ca             	add    rdx,rcx
+ 44d:	48 01 d0             	add    rax,rdx
+ 450:	48 39 c2             	cmp    rdx,rax
+ 453:	73 38                	jae    48d <rw_scatter() [clone ._omp_fn.4]+0x6d>
+ 455:	4c 8b 0d 00 00 00 00 	mov    r9,QWORD PTR [rip+0x0]        # 45c <rw_scatter() [clone ._omp_fn.4]+0x3c>	458: R_X86_64_PC32	a-0x4
+ 45c:	4c 8b 05 00 00 00 00 	mov    r8,QWORD PTR [rip+0x0]        # 463 <rw_scatter() [clone ._omp_fn.4]+0x43>	45f: R_X86_64_PC32	idx1-0x4
+ 463:	48 83 c2 01          	add    rdx,0x1
+ 467:	48 8b 3d 00 00 00 00 	mov    rdi,QWORD PTR [rip+0x0]        # 46e <rw_scatter() [clone ._omp_fn.4]+0x4e>	46a: R_X86_64_PC32	b-0x4
+ 46e:	48 83 c0 01          	add    rax,0x1
+ 472:	66 0f 1f 44 00 00    	nop    WORD PTR [rax+rax*1+0x0]
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[idx1[i]] = b[i];
+ 478:	49 8b 0c d0          	mov    rcx,QWORD PTR [r8+rdx*8]
+ 47c:	48 8b 34 d7          	mov    rsi,QWORD PTR [rdi+rdx*8]
+ 480:	48 83 c2 01          	add    rdx,0x1
+ 484:	48 39 d0             	cmp    rax,rdx
+ 487:	49 89 34 c9          	mov    QWORD PTR [r9+rcx*8],rsi
+ 48b:	77 eb                	ja     478 <rw_scatter() [clone ._omp_fn.4]+0x58>
+    return get_time() - elapsed;
+}
+
+double rw_scatter(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 48d:	5b                   	pop    rbx
+ 48e:	c3                   	ret    
+ 48f:	90                   	nop
+
+0000000000000490 <rw_scatter_gather() [clone ._omp_fn.5]>:
+    return get_time() - elapsed;
+}
+
+double rw_scatter_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 490:	53                   	push   rbx
+ 491:	e8 00 00 00 00       	call   496 <rw_scatter_gather() [clone ._omp_fn.5]+0x6>	492: R_X86_64_PC32	omp_get_num_threads-0x4
+ 496:	48 63 d8             	movsxd rbx,eax
+ 499:	e8 00 00 00 00       	call   49e <rw_scatter_gather() [clone ._omp_fn.5]+0xe>	49a: R_X86_64_PC32	omp_get_thread_num-0x4
+ 49e:	31 d2                	xor    edx,edx
+ 4a0:	48 63 c8             	movsxd rcx,eax
+ 4a3:	b8 ff ff ff 03       	mov    eax,0x3ffffff
+ 4a8:	48 f7 f3             	div    rbx
+ 4ab:	48 39 d1             	cmp    rcx,rdx
+ 4ae:	73 06                	jae    4b6 <rw_scatter_gather() [clone ._omp_fn.5]+0x26>
+ 4b0:	48 83 c0 01          	add    rax,0x1
+ 4b4:	31 d2                	xor    edx,edx
+ 4b6:	48 0f af c8          	imul   rcx,rax
+ 4ba:	48 01 ca             	add    rdx,rcx
+ 4bd:	48 01 d0             	add    rax,rdx
+ 4c0:	48 39 c2             	cmp    rdx,rax
+ 4c3:	73 44                	jae    509 <rw_scatter_gather() [clone ._omp_fn.5]+0x79>
+ 4c5:	4c 8b 15 00 00 00 00 	mov    r10,QWORD PTR [rip+0x0]        # 4cc <rw_scatter_gather() [clone ._omp_fn.5]+0x3c>	4c8: R_X86_64_PC32	a-0x4
+ 4cc:	4c 8b 0d 00 00 00 00 	mov    r9,QWORD PTR [rip+0x0]        # 4d3 <rw_scatter_gather() [clone ._omp_fn.5]+0x43>	4cf: R_X86_64_PC32	idx1-0x4
+ 4d3:	48 83 c2 01          	add    rdx,0x1
+ 4d7:	4c 8b 05 00 00 00 00 	mov    r8,QWORD PTR [rip+0x0]        # 4de <rw_scatter_gather() [clone ._omp_fn.5]+0x4e>	4da: R_X86_64_PC32	b-0x4
+ 4de:	48 8b 3d 00 00 00 00 	mov    rdi,QWORD PTR [rip+0x0]        # 4e5 <rw_scatter_gather() [clone ._omp_fn.5]+0x55>	4e1: R_X86_64_PC32	idx2-0x4
+ 4e5:	48 83 c0 01          	add    rax,0x1
+ 4e9:	0f 1f 80 00 00 00 00 	nop    DWORD PTR [rax+0x0]
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[idx1[i]] = b[idx2[i]];
+ 4f0:	48 8b 34 d7          	mov    rsi,QWORD PTR [rdi+rdx*8]
+ 4f4:	49 8b 0c d1          	mov    rcx,QWORD PTR [r9+rdx*8]
+ 4f8:	48 83 c2 01          	add    rdx,0x1
+ 4fc:	48 39 d0             	cmp    rax,rdx
+ 4ff:	49 8b 34 f0          	mov    rsi,QWORD PTR [r8+rsi*8]
+ 503:	49 89 34 ca          	mov    QWORD PTR [r10+rcx*8],rsi
+ 507:	77 e7                	ja     4f0 <rw_scatter_gather() [clone ._omp_fn.5]+0x60>
+    return get_time() - elapsed;
+}
+
+double rw_scatter_gather(){
+    double elapsed = get_time();
+    #pragma omp parallel for
+ 509:	5b                   	pop    rbx
+ 50a:	c3                   	ret    
+ 50b:	0f 1f 44 00 00       	nop    DWORD PTR [rax+rax*1+0x0]
+
+0000000000000510 <rw_seq_copy()>:
+#include "common.h"
+#include <string.h>
+
+double rw_seq_copy(){
+ 510:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 514:	e8 00 00 00 00       	call   519 <rw_seq_copy()+0x9>	515: R_X86_64_PC32	get_time()-0x4
+ 519:	31 c9                	xor    ecx,ecx
+ 51b:	31 d2                	xor    edx,edx
+ 51d:	31 f6                	xor    esi,esi
+ 51f:	bf 00 00 00 00       	mov    edi,0x0	520: R_X86_64_32	.text
+ 524:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 52a:	e8 00 00 00 00       	call   52f <rw_seq_copy()+0x1f>	52b: R_X86_64_PC32	GOMP_parallel-0x4
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
+        a[i] = b[i];
+    }
+    return get_time() - elapsed;
+ 52f:	e8 00 00 00 00       	call   534 <rw_seq_copy()+0x24>	530: R_X86_64_PC32	get_time()-0x4
+ 534:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 53a:	48 83 c4 18          	add    rsp,0x18
+ 53e:	c3                   	ret    
+ 53f:	90                   	nop
+
+0000000000000540 <rw_seq_inc()>:
+
+double rw_seq_inc(){
+ 540:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 544:	e8 00 00 00 00       	call   549 <rw_seq_inc()+0x9>	545: R_X86_64_PC32	get_time()-0x4
+ 549:	31 c9                	xor    ecx,ecx
+ 54b:	31 d2                	xor    edx,edx
+ 54d:	31 f6                	xor    esi,esi
+ 54f:	bf 00 00 00 00       	mov    edi,0x0	550: R_X86_64_32	.text+0x70
+ 554:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 55a:	e8 00 00 00 00       	call   55f <rw_seq_inc()+0x1f>	55b: R_X86_64_PC32	GOMP_parallel-0x4
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
+        a[i]++;
+    }
+    return get_time() - elapsed;
+ 55f:	e8 00 00 00 00       	call   564 <rw_seq_inc()+0x24>	560: R_X86_64_PC32	get_time()-0x4
+ 564:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 56a:	48 83 c4 18          	add    rsp,0x18
+ 56e:	c3                   	ret    
+ 56f:	90                   	nop
+
+0000000000000570 <rw_seq_scan()>:
+
+double rw_seq_scan(){
+ 570:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 574:	e8 00 00 00 00       	call   579 <rw_seq_scan()+0x9>	575: R_X86_64_PC32	get_time()-0x4
+ 579:	31 c9                	xor    ecx,ecx
+ 57b:	31 d2                	xor    edx,edx
+ 57d:	31 f6                	xor    esi,esi
+ 57f:	bf 00 00 00 00       	mov    edi,0x0	580: R_X86_64_32	.text+0x1d0
+ 584:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 58a:	e8 00 00 00 00       	call   58f <rw_seq_scan()+0x1f>	58b: R_X86_64_PC32	GOMP_parallel-0x4
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[i] += a[i-1];
+    }
+    return get_time() - elapsed;
+ 58f:	e8 00 00 00 00       	call   594 <rw_seq_scan()+0x24>	590: R_X86_64_PC32	get_time()-0x4
+ 594:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 59a:	48 83 c4 18          	add    rsp,0x18
+ 59e:	c3                   	ret    
+ 59f:	90                   	nop
+
+00000000000005a0 <rw_gather()>:
+
+double rw_gather(){
+ 5a0:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 5a4:	e8 00 00 00 00       	call   5a9 <rw_gather()+0x9>	5a5: R_X86_64_PC32	get_time()-0x4
+ 5a9:	31 c9                	xor    ecx,ecx
+ 5ab:	31 d2                	xor    edx,edx
+ 5ad:	31 f6                	xor    esi,esi
+ 5af:	bf 00 00 00 00       	mov    edi,0x0	5b0: R_X86_64_32	.text+0x240
+ 5b4:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 5ba:	e8 00 00 00 00       	call   5bf <rw_gather()+0x1f>	5bb: R_X86_64_PC32	GOMP_parallel-0x4
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[i] = b[idx1[i]];
+    }
+    return get_time() - elapsed;
+ 5bf:	e8 00 00 00 00       	call   5c4 <rw_gather()+0x24>	5c0: R_X86_64_PC32	get_time()-0x4
+ 5c4:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 5ca:	48 83 c4 18          	add    rsp,0x18
+ 5ce:	c3                   	ret    
+ 5cf:	90                   	nop
+
+00000000000005d0 <rw_scatter()>:
+
+double rw_scatter(){
+ 5d0:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 5d4:	e8 00 00 00 00       	call   5d9 <rw_scatter()+0x9>	5d5: R_X86_64_PC32	get_time()-0x4
+ 5d9:	31 c9                	xor    ecx,ecx
+ 5db:	31 d2                	xor    edx,edx
+ 5dd:	31 f6                	xor    esi,esi
+ 5df:	bf 00 00 00 00       	mov    edi,0x0	5e0: R_X86_64_32	.text+0x420
+ 5e4:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 5ea:	e8 00 00 00 00       	call   5ef <rw_scatter()+0x1f>	5eb: R_X86_64_PC32	GOMP_parallel-0x4
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[idx1[i]] = b[i];
+    }
+    return get_time() - elapsed;
+ 5ef:	e8 00 00 00 00       	call   5f4 <rw_scatter()+0x24>	5f0: R_X86_64_PC32	get_time()-0x4
+ 5f4:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 5fa:	48 83 c4 18          	add    rsp,0x18
+ 5fe:	c3                   	ret    
+ 5ff:	90                   	nop
+
+0000000000000600 <rw_scatter_gather()>:
+
+double rw_scatter_gather(){
+ 600:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 604:	e8 00 00 00 00       	call   609 <rw_scatter_gather()+0x9>	605: R_X86_64_PC32	get_time()-0x4
+ 609:	31 c9                	xor    ecx,ecx
+ 60b:	31 d2                	xor    edx,edx
+ 60d:	31 f6                	xor    esi,esi
+ 60f:	bf 00 00 00 00       	mov    edi,0x0	610: R_X86_64_32	.text+0x490
+ 614:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 61a:	e8 00 00 00 00       	call   61f <rw_scatter_gather()+0x1f>	61b: R_X86_64_PC32	GOMP_parallel-0x4
+    #pragma omp parallel for
+    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+        a[idx1[i]] = b[idx2[i]];
+    }
+    return get_time() - elapsed;
+ 61f:	e8 00 00 00 00       	call   624 <rw_scatter_gather()+0x24>	620: R_X86_64_PC32	get_time()-0x4
+ 624:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 62a:	48 83 c4 18          	add    rsp,0x18
+ 62e:	c3                   	ret    
+ 62f:	90                   	nop
+
+0000000000000630 <rw_tile(unsigned long, unsigned long)>:
+
+double rw_tile(uint64_t L, uint64_t K){
+ 630:	55                   	push   rbp
+ 631:	53                   	push   rbx
+ 632:	48 89 f5             	mov    rbp,rsi
+ 635:	48 89 fb             	mov    rbx,rdi
+ 638:	48 83 ec 18          	sub    rsp,0x18
+    double elapsed = get_time();
+ 63c:	e8 00 00 00 00       	call   641 <rw_tile(unsigned long, unsigned long)+0x11>	63d: R_X86_64_PC32	get_time()-0x4
+ 641:	48 8b 15 00 00 00 00 	mov    rdx,QWORD PTR [rip+0x0]        # 648 <rw_tile(unsigned long, unsigned long)+0x18>	644: R_X86_64_PC32	a-0x4
+ 648:	c5 fb 11 44 24 08    	vmovsd QWORD PTR [rsp+0x8],xmm0
+ 64e:	48 8d 7b ff          	lea    rdi,[rbx-0x1]
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; i += K) {
+ 652:	45 31 c0             	xor    r8d,r8d
+ 655:	0f 1f 00             	nop    DWORD PTR [rax]
+        for(uint64_t j = 0; j < L; j++) {
+ 658:	48 85 db             	test   rbx,rbx
+ 65b:	4a 8d 0c 07          	lea    rcx,[rdi+r8*1]
+ 65f:	4c 89 c0             	mov    rax,r8
+ 662:	75 18                	jne    67c <rw_tile(unsigned long, unsigned long)+0x4c>
+ 664:	eb 20                	jmp    686 <rw_tile(unsigned long, unsigned long)+0x56>
+ 666:	66 2e 0f 1f 84 00 00 00 00 00 	nop    WORD PTR cs:[rax+rax*1+0x0]
+            const uint64_t idx = i + j;
+ 670:	48 83 c0 01          	add    rax,0x1
+            if(idx >= HS_ARRAY_ELEM)
+ 674:	48 3d 00 00 00 04    	cmp    rax,0x4000000
+ 67a:	74 0a                	je     686 <rw_tile(unsigned long, unsigned long)+0x56>
+                break;
+            a[idx]++;
+ 67c:	48 83 04 c2 01       	add    QWORD PTR [rdx+rax*8],0x1
+}
+
+double rw_tile(uint64_t L, uint64_t K){
+    double elapsed = get_time();
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; i += K) {
+        for(uint64_t j = 0; j < L; j++) {
+ 681:	48 39 c1             	cmp    rcx,rax
+ 684:	75 ea                	jne    670 <rw_tile(unsigned long, unsigned long)+0x40>
+    return get_time() - elapsed;
+}
+
+double rw_tile(uint64_t L, uint64_t K){
+    double elapsed = get_time();
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; i += K) {
+ 686:	49 01 e8             	add    r8,rbp
+ 689:	49 81 f8 ff ff ff 03 	cmp    r8,0x3ffffff
+ 690:	76 c6                	jbe    658 <rw_tile(unsigned long, unsigned long)+0x28>
+            if(idx >= HS_ARRAY_ELEM)
+                break;
+            a[idx]++;
+        }
+    }
+    return get_time() - elapsed;
+ 692:	e8 00 00 00 00       	call   697 <rw_tile(unsigned long, unsigned long)+0x67>	693: R_X86_64_PC32	get_time()-0x4
+ 697:	c5 fb 5c 44 24 08    	vsubsd xmm0,xmm0,QWORD PTR [rsp+0x8]
+}
+ 69d:	48 83 c4 18          	add    rsp,0x18
+ 6a1:	5b                   	pop    rbx
+ 6a2:	5d                   	pop    rbp
+ 6a3:	c3                   	ret    

@@ -14,14 +14,13 @@ double r_seq_reduce(){
     volatile data_t * vol_a = a;
     volatile uint64_t sum = 0;
     double elapsed = get_time();
-    #pragma omp parallel for reduction(+ : sum)
+    #pragma omp parallel for simd reduction(+ : sum)
+    //#pragma omp simd reduction(+ : sum)
     for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i) {
-        sum += vol_a[i];
+        sum += a[i];
     }
     return get_time() - elapsed;
 }
-
-
 
 double r_rand_pchase(){
     void **curr = ptr;

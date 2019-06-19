@@ -8,7 +8,7 @@ int main(){
     print_bw_header();
     
     
-    /*alloc_a();
+    alloc_a();
      
     //read kernels
     elapsed = kernel_min_time(&iter, r_seq_ind, init_a);
@@ -69,12 +69,7 @@ int main(){
     
     elapsed = kernel_min_time(&iter, rw_seq_scan, init_a);
     print_bw("rw_seq_scan", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
-    
-    free_a();
-    free_b();*/
-    
-    alloc_a();
-    alloc_b();
+
     alloc_idx1();
     
     init_ab();

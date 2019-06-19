@@ -1,36 +1,48 @@
 #include <sys/time.h>
 #include "common.h"
-#include <stdio.h>
 #include <float.h>
 #include <vector>
 #include <algorithm>
-#include <omp.h>
 
-data_t* a = NULL;
-data_t* b = NULL;
-data_t* c = NULL;
+data_t* __restrict__ a = NULL;
+data_t* __restrict__ b = NULL;
+data_t* __restrict__ c = NULL;
 void** ptr = NULL;
-uint64_t* idx1 = NULL;
-uint64_t* idx2 = NULL;
+uint64_t* __restrict__ idx1 = NULL;
+uint64_t* __restrict__ idx2 = NULL;
+
+void* alloc_aligned_4K(uint64_t size){
+    void* ptr;
+    if(posix_memalign(&ptr, 4096, size)){
+        fprintf(stderr, "Memory allocation of size %luB failed\n", size);
+        exit(-1);
+    }
+    return ptr;
+}
 
 void alloc_a(){
-    a = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    //a = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    a = (data_t*)alloc_aligned_4K(HS_ARRAY_SIZE_BTYE);
 }
 
 void alloc_b(){
-    b = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    //b = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
+    b = (data_t*)alloc_aligned_4K(HS_ARRAY_SIZE_BTYE);
 }
 
 void alloc_ptr(){
-    ptr = (void**)malloc(HS_ARRAY_ELEM * sizeof(void*));
+    //ptr = (void**)malloc(HS_ARRAY_ELEM * sizeof(void*));
+    ptr = (void**)alloc_aligned_4K(HS_ARRAY_ELEM * sizeof(void*));
 }
 
 void alloc_idx1(){
-    idx1 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
+    //idx1 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
+    idx1 = (uint64_t*)alloc_aligned_4K(HS_ARRAY_ELEM * sizeof(uint64_t));
 }
 
 void alloc_idx2(){
-    idx2 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
+    //idx2 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
+    idx2 = (uint64_t*)alloc_aligned_4K(HS_ARRAY_ELEM * sizeof(uint64_t));
 }
 
 void free_a(){

@@ -11,8 +11,7 @@
 typedef uint64_t data_t;
 
 #ifndef HS_ARRAY_ELEM
-#define HS_ARRAY_ELEM       (16UL)
-//#define HS_ARRAY_ELEM       (1024UL)
+#define HS_ARRAY_ELEM       (64UL*1024*1024)
 #endif
 
 //#ifndef HS_TILE_L
@@ -33,11 +32,11 @@ typedef uint64_t data_t;
 #define HS_ARRAY_SIZE_MB    (HS_ARRAY_SIZE_BTYE/1024/1024)
 
 // Globals
-extern data_t* a;
-extern data_t* b;
+extern data_t* __restrict__ a;
+extern data_t* __restrict__  b;
 extern void** ptr;
-extern uint64_t* idx1;
-extern uint64_t* idx2;
+extern uint64_t* __restrict__ idx1;
+extern uint64_t* __restrict__ idx2;
 
 //helper functions for print formatting
 #define print_bw_header()               printf("%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");

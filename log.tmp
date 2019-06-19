@@ -1,12 +1,12 @@
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/kernels/read_kernels.o src/kernels/read_kernels.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/kernels/write_kernels.o src/kernels/write_kernels.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/kernels/mixed_kernels.o src/kernels/mixed_kernels.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/utils/common.o src/utils/common.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/hs_throughput.o src/hs_throughput.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/hs_throughput.o -o build/throughput
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/hs_peak_bandwidth.o src/hs_peak_bandwidth.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/hs_peak_bandwidth.o -o build/peak_bandwidth
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/hs_latency.o src/hs_latency.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/hs_latency.o -o build/latency
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) -c -o src/test.o src/test.cpp
-g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(32*1024*1024UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/test.o -o build/test
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/kernels/read_kernels.o src/kernels/read_kernels.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/kernels/write_kernels.o src/kernels/write_kernels.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/kernels/mixed_kernels.o src/kernels/mixed_kernels.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/utils/common.o src/utils/common.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/hs_throughput.o src/hs_throughput.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/hs_throughput.o -o build/throughput
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/hs_peak_bandwidth.o src/hs_peak_bandwidth.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/hs_peak_bandwidth.o -o build/peak_bandwidth
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/hs_latency.o src/hs_latency.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/hs_latency.o -o build/latency
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) -c -o src/test.o src/test.cpp
+g++ -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 -DHS_ARRAY_ELEM=\(4294967296*1UL\) src/kernels/read_kernels.o src/kernels/write_kernels.o src/kernels/mixed_kernels.o src/utils/common.o src/test.o -o build/test

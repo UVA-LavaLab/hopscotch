@@ -1,6 +1,6 @@
 .PHONY: all clean preprocess 
 
-CPPFLAGS = -Wall -Ofast -g -fopenmp -I./include/ -Wno-unused-variable -std=c++11 $(USER_DEF)
+CPPFLAGS = -Wall -Ofast -g -fopenmp -fopt-info-vec -march=native -I./include/ -Wno-unused-variable -std=c++11 $(USER_DEF)
 BUILD_DIR = build
 INC_DIR = include
 HEADERS = $(wildcard $(INC_DIR)/*.h)
