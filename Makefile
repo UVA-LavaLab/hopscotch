@@ -15,6 +15,7 @@ all: preprocess 					\
 	$(BUILD_DIR)/throughput 		\
 	$(BUILD_DIR)/peak_bandwidth 	\
 	$(BUILD_DIR)/latency 			\
+	$(BUILD_DIR)/roofline 			\
 	$(BUILD_DIR)/test
 	
 clean:
@@ -36,6 +37,9 @@ $(BUILD_DIR)/peak_bandwidth: $(KERN_OBJ) src/hs_peak_bandwidth.o
 	g++ $(CPPFLAGS) $^ -o $@
 	
 $(BUILD_DIR)/latency: $(KERN_OBJ) src/hs_latency.o
+	g++ $(CPPFLAGS) $^ -o $@
+	
+$(BUILD_DIR)/roofline: $(KERN_OBJ) src/hs_roofline.o
 	g++ $(CPPFLAGS) $^ -o $@
 
 $(BUILD_DIR)/test: $(KERN_OBJ) src/test.o

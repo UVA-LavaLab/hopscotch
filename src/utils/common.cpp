@@ -1,6 +1,5 @@
 #include <sys/time.h>
 #include "common.h"
-#include <float.h>
 #include <vector>
 #include <algorithm>
 
@@ -116,7 +115,10 @@ void default_init(){
 }
 
 void init_a(){
-    memset(a, 1, HS_ARRAY_SIZE_BTYE);
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
+        a[i] = 1.0 + 1e-8;
+    }
 }
 
 void init_ab(){

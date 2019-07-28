@@ -12,7 +12,7 @@ double r_seq_ind(){
 
 double r_seq_reduce(){
     volatile data_t * vol_a = a;
-    volatile uint64_t sum = 0;
+    volatile data_t sum = 0;
     double elapsed = get_time();
     #pragma omp parallel for simd reduction(+ : sum)
     //#pragma omp simd reduction(+ : sum)

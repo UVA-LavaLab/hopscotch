@@ -9,6 +9,7 @@ int main(){
     
     
     alloc_a();
+    //alloc_ptr();
      
     //read kernels
     elapsed = kernel_min_time(&iter, r_seq_ind, init_a);
@@ -19,6 +20,10 @@ int main(){
     
     elapsed = kernel_min_time(&iter, r_rand_ind, init_a);
     print_bw("r_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
+    
+    //elapsed = kernel_min_time(&iter, r_rand_pchase, init_pointer_chasing);
+    //print_bw("r_rand_pchase", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
+    //free_ptr();
     
     elapsed = kernel_min_time(&iter, r_stride_2, init_a);
     print_bw("r_stride_2", iter, elapsed, HS_ARRAY_SIZE_MB / 2 / elapsed);
@@ -67,8 +72,8 @@ int main(){
     elapsed = kernel_min_time(&iter, rw_seq_inc, init_a);
     print_bw("rw_seq_inc", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
     
-    elapsed = kernel_min_time(&iter, rw_seq_scan, init_a);
-    print_bw("rw_seq_scan", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
+    //elapsed = kernel_min_time(&iter, rw_seq_scan, init_a);
+    //print_bw("rw_seq_scan", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
 
     alloc_idx1();
     

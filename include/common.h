@@ -4,11 +4,13 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <float.h>
 #include <string.h>
 #include <omp.h>
 #include <algorithm>
 
-typedef uint64_t data_t;
+//typedef uint64_t data_t;
+typedef double data_t;
 
 #ifndef HS_ARRAY_ELEM
 #define HS_ARRAY_ELEM       (64UL*1024*1024)
