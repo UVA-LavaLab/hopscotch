@@ -1,0 +1,107 @@
+
+Hopscotch v1.0
+==============
+
+Author: Alif Ahmed
+email:  alihahmed@virginia.edu
+
+I. Overview
+
+  Hopscotch is a micro-benchmark suite for memory performace evaluation. Currently it supports empirically measuring roofline, bandwidth measurement with different access patterns and latency measurement. GPU is also supported for roofline. A memory access pattern visualizer (MAPProfiler) is also included with Hopscotch. MAPProfiler currently supports only x86_64 executables.
+
+  It is under active development. Latest source codes can be found on:
+  https://github.com/alifahmed/hopscotch
+
+  Details about most of the kernels and benchmark can be found in the paper:
+  A. Ahmed, K. Skadron, "Hopscotch: A Micro-benchmark Suite for Memory Performance Evaluation", MEMSYS, 2019.
+
+II. Directory Structure
+
+hopscotch/
+ |
+ |---cpu/								Directory containing benchmarks for memory connected to CPU.
+ |    |
+ |    |---1_roofline/					Roofline benchmark (CPU version).
+ |    |---2_bandwidth/					Benchmarks memory with different access patterns.
+ |    |---3_latency/    	            Latency benchmark.
+ |    |---4_cache/						Benchmark for evaluating caching.
+ |    |---common/ 	        			Source code common to all benchmarks.
+ |    |---include/						Common header files.
+ |    |---kernels/						Common kernels. May get used by different benchmarks.
+ |
+ |---gpu/
+ |    |
+ |    |---1_roofline/					Roofline benchmark (CUDA version).
+ |    |---common/ 	        			Source code common to all benchmarks.
+ |    |---include/						Common header files.
+ |
+ |---MAPProfiler/						A tool for memory access pattern visualization.
+ |
+ |---Makefile                           Top level build file.
+ |---README								This file.
+  
+
+  More details can be found on the README files inside these directories.
+
+
+II. Prerequisite
+
+  a) Python 3
+  b) MAPProfiler requires Intel Pin Tool. Check the README inside MAPProfiler for details.
+
+
+III. Installation
+
+  Running make from top directory will build all the sub-directories. Binaries are created inside the respective benchmark's directory. Make can also be run inside a benchmark's directory to build just that specific benchmark. Some benchmarks will use scripts to rebuild the binaries with different configurations.
+  
+
+IV. CPU Benchmarks
+
+  1_roofline
+  ==========
+    Measures the maximum attainable performance with varying arithmetic intensity.
+	To run: ./roofline.py
+	The python script will generate a pdf for the roofline plot. Available options can be found
+    using ./roofline.py --help
+
+  2_bandwidth
+  ===========
+    Measures bandwidth with different types of access patterns.
+    To run:  a) make
+             b) ./bandwidth
+    Working set size can be changed by defining HS_ARRAY_ELEM, which denotes number of elements in the working set array.
+    HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
+    Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
+			 b) ./bandwidth
+
+  3_latency
+  ==========
+    Measures the latency with a single threaded pointer chasing kernel. Working set size is varied.
+	To run: ./latency.py
+	The python script will generate a pdf for the latency plot. Available options can be found
+    using ./latency.py --help
+  
+  4_cache
+  ===========
+    Measures cache efficiency by running workloads with different spatial and temporal locality ({low,low}, {low,high}, {high,low}, {high,high})
+    To run:  a) make
+             b) ./cache
+    Working set size can be changed by defining HS_ARRAY_ELEM, which denotes number of elements in the working set array.
+    HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
+    Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
+			 b) ./cache
+
+
+IV. GPU Benchmarks
+
+  1_roofline
+  ==========
+    Measures the maximum attainable performance with varying arithmetic intensity.
+	To run: ./roofline.py
+	The python script will generate a pdf for the roofline plot. Available options can be found
+    using ./roofline.py --help
+
+
+
+
+

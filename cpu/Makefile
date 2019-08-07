@@ -8,8 +8,10 @@
 #
 ###############################################################################
 
-TARGETS = cpu gpu
+TARGETS = 	1_roofline 			\
+			2_bandwidth 		\
+			3_latency			\
+			4_cache
 
-include makedir.mk
-
+include ../makedir.mk
 

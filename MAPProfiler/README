@@ -1,0 +1,62 @@
+
+Memory Access Pattern Profiler v1.0
+===================================
+
+Author: Alif Ahmed
+email:  alihahmed@virginia.edu
+
+I. Overview
+
+  Memory Access Pattern Profiler (MAPProfiler) is a tool to generate memory access pattern of any x86_64 executable. It uses Intel PIN tool to instrument the binary for profiling purposes. It supports function level granularity (profiling can be limited to a specific function, or the whole program).
+
+
+II. Prerequisite
+
+  a) Intel Pin Tool. Tested with version 3.4 and 3.7.
+  https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool
+
+  b) Python 3.5 with pandas, numpy and matplotlib.
+
+  c) The executable being profiled should be compiled with debug symbols enabled.
+
+
+III. Installation
+
+  a) Copy MAPProflier to <pin-tool-path>/source/tools
+  b) Run make from within the MAPProfiler directory. It should create obj-intel64/MAPProfiler.so.
+     The created MAPProfiler.so file will be used as a target of Pin tool.
+  
+
+IV. Usage
+
+  Running MAPProfiler is a two step process.
+
+  Step 1: Capturing memory accesses with Pin and MAPProfiler
+  ----------------------------------------------------------
+  The generic command for capturing is:
+  <pin> -t <MAPProfiler.so> [-func <func-to-profile>] [-lim <log-entry-limit>] [-out <log-file>] -- <program-to-profile>
+  
+  The options are:
+    -func: Name of the function you want to proflie. Default is "main".
+           For C++, full name including namespace and class name is necessary.
+    -lim:  Maximum limit of log entry. Default is 100000.
+    -out:  Name of output log file. Default is "log_map.csv"
+
+  Running the command will generate a log file, which is used in the next step.
+
+  Step 2: Plotting the memory access pattern from log file
+  --------------------------------------------------------
+  Two simple python scripts are provided for plotting an interactive graph.
+  Any of these can be used depending on the usage.
+  ./plotter.py <log-file>
+     Plots the access pattern captured in <log-file> (<log-file> is generated in Step 1).
+     Consequtive read and write access to same address is merged as read-modify-write operations.
+  
+  ./plotter2.py <log_file> <start_addr> <end_addr> <type= R or W or RW>
+     Plots accesses from <start_addr> to <end_addr>. If type is R, then only read accesses are plotted.
+     If W, then only writes are plotted, and if RW, then both are plotted. Unlike plotter.py, this script
+     does not merge consequtive read and write opetations into read-modify-write.
+
+
+
+

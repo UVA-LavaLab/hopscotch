@@ -8,8 +8,7 @@
 #
 ###############################################################################
 
-TARGETS = cpu gpu
+TARGETS = 1_roofline
 
-include makedir.mk
-
+include ../makedir.mk
 
