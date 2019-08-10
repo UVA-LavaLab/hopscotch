@@ -1,3 +1,12 @@
+/*******************************************************************************
+ *
+ * File: hs_bandwidth.cpp
+ * Description: Measures bandwidth with different types of access patterns.
+ * 
+ * Author: Alif Ahmed
+ * Date: Aug 06, 2019
+ *
+ ******************************************************************************/
 #include "common.h"
 #include "stdio.h"
 

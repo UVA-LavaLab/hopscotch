@@ -60,34 +60,47 @@ IV. CPU Benchmarks
   1_roofline
   ==========
     Measures the maximum attainable performance with varying arithmetic intensity.
-	To run: ./roofline.py
-	The python script will generate a pdf for the roofline plot. Available options can be found
-    using ./roofline.py --help
+	
+    To run: ./roofline_cpu.py
+	
+    The python script will generate a pdf for the roofline plot. Available options can be found
+    using ./roofline_cpu.py --help
+
 
   2_bandwidth
   ===========
     Measures bandwidth with different types of access patterns.
+
     To run:  a) make
              b) ./bandwidth
+
     Working set size can be changed by defining HS_ARRAY_ELEM, which denotes number of elements in the working set array.
     HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
+
     Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
 			 b) ./bandwidth
+
 
   3_latency
   ==========
     Measures the latency with a single threaded pointer chasing kernel. Working set size is varied.
-	To run: ./latency.py
-	The python script will generate a pdf for the latency plot. Available options can be found
+	
+    To run: ./latency.py
+	
+    The python script will generate a pdf for the latency plot. Available options can be found
     using ./latency.py --help
   
+
   4_cache
   ===========
     Measures cache efficiency by running workloads with different spatial and temporal locality ({low,low}, {low,high}, {high,low}, {high,high})
+    
     To run:  a) make
              b) ./cache
+    
     Working set size can be changed by defining HS_ARRAY_ELEM, which denotes number of elements in the working set array.
     HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
+    
     Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
 			 b) ./cache
 
@@ -97,11 +110,16 @@ IV. GPU Benchmarks
   1_roofline
   ==========
     Measures the maximum attainable performance with varying arithmetic intensity.
-	To run: ./roofline.py
-	The python script will generate a pdf for the roofline plot. Available options can be found
+    Supports single and double precision floating point operations.
+	
+    To run: ./roofline.py
+	
+    The python script will generate a pdf for the roofline plot. Available options can be found
     using ./roofline.py --help
 
 
 
+Copyright (c) 2019, University of Virginia
+All rights reserved.
 
 

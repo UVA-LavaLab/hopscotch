@@ -1,5 +1,19 @@
 #include "common.h"
 
+/*******************************************************************************
+ *
+ * File: hs_cache.cpp
+ * Description: Measures cache performance with varying spatial and temporal
+ * locality.
+ * 
+ * Author: Alif Ahmed
+ * Date: Aug 06, 2019
+ *
+ ******************************************************************************/
+
+/**
+ * Initializes and runs kernel
+ */
 static double kernel_min_time_2(uint64_t* iter, double (*func)(uint64_t,uint64_t), void (*init)(), uint64_t arg1, uint64_t arg2) {
     init();
     func(arg1, arg2);             //warm up

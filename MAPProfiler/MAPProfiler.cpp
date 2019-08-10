@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *
+ * File: MAPProfiler.cpp
+ * Description: Pin tool for tracing memory accesses.
+ * 
+ * Author:  Alif Ahmed
+ * Email:   alifahmed@virginia.edu
+ * Updated: Aug 06, 2019
+ *
+ ******************************************************************************/
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
@@ -12,158 +22,312 @@
 
 using namespace std;
 
-#define MAX_THREAD_NUM      1024
 
+/*******************************************************************************
+ * Knobs for configuring the instrumentation
+ ******************************************************************************/
 // Name of the function to profile
-KNOB<string> knobFunctionName(KNOB_MODE_WRITEONCE, "pintool", "func", "main", "Function to be profiled.");
+KNOB<string> knobFunctionName(KNOB_MODE_WRITEONCE, "pintool", "func", "main",
+		"Function to be profiled.");
 
 // Max log items per thread
-KNOB<UINT64> knobMaxLog(KNOB_MODE_WRITEONCE, "pintool", "lim", "100000", "Max number of read/writes to log per thread.");
+KNOB<UINT64> knobMaxLog(KNOB_MODE_WRITEONCE, "pintool", "lim", "1000000", 
+		"Max number of read/writes to log per thread.");
 
 // Output file name
-KNOB<string> knobOutFile(KNOB_MODE_WRITEONCE, "pintool", "out", "log_map.csv", "Output file name.");
+KNOB<string> knobOutFile(KNOB_MODE_WRITEONCE, "pintool", "out", "mem_trace.csv",
+		"Output file name.");
 
-// Log level--
-// 1: Log only the specified function
-// N: Log upto N function calls from the specified functions. Set to a big number to deep logging
-KNOB<UINT64> knobLogLevel(KNOB_MODE_WRITEONCE, "pintool", "level", "1000", "Log level. 1: Without deep logging.");
+// Max threads
+KNOB<UINT64> knobMaxThreads(KNOB_MODE_WRITEONCE, "pintool", "threads", "10000",
+		"Upper limit of the number of threads that can be used by the program \
+		being profiled.");
 
+// Read logging (1: enable, 0: disable)
+KNOB<bool> knobRead(KNOB_MODE_WRITEONCE, "pintool", "read", "1", "Read logging \
+		(1: enable, 0: disable).");
+
+// Write logging (1: enable, 0: disable)
+KNOB<bool> knobWrite(KNOB_MODE_WRITEONCE, "pintool", "write", "1", "Write \
+		logging (1: enable, 0: disable).");
+
+
+
+/*******************************************************************************
+ * Structs
+ ******************************************************************************/
+#define LINE_SIZE	64
+
+// Structure for keeping thread specific data. Padded to LINE_SIZE for avoiding
+// false sharing.
 typedef struct{
-    UINT64 rtnEntryCnt = 0;
-    UINT8 _pad[64 - 8];
+	// Tracks if the thread is inside the requested functions. Greater than 0
+	// means it is.
+    UINT64 rtnEntryCnt __attribute((aligned(LINE_SIZE)));
 } ThreadData;
 
+
+// Keeps information for each memory access. Padded to LINE_SIZE for avoiding
+// false sharing.
 typedef struct{
-    ADDRINT ea;         // address
-    UINT8 type;         // 'R' or 'W'
-    UINT8 _pad[64 - sizeof(ADDRINT) - 8];
+	// Effective virtual address
+    ADDRINT ea __attribute((aligned(LINE_SIZE)));
+
+	// Type of access. 'R' for read and 'W' for write.
+    UINT8 type;
 } MemInfo;
 
-MemInfo* info = NULL;
-ThreadData tdata[MAX_THREAD_NUM];
+
+
+/*******************************************************************************
+ * Globals
+ ******************************************************************************/
+// Array that contains all the memory accesses.
+MemInfo* info = nullptr;
+
+// Array that keeps thread specific data for all threads.
+ThreadData* tdata = nullptr;
+
+// Limit of buffer entry. Maps to knobMaxLog.
 UINT64 buf_log_lim = 0;
+
+// Current count of log entry.
 UINT64 buf_log_cnt = 0;
-UINT64 log_level = 0;
+
+// Name of the function that is being profiled. Maps to knobFunctionName.
 string rtn_name;
+
+// Lock for synchronizing thread access to 'info' array.
 PIN_LOCK lock;
 
+// Read logging is enabled if true. Maps to knobRead.
+bool read_log_en = true;
+
+// Write logging is enabled if true. Maps to knobWrite.
+bool write_log_en = true;
 
 
+
+/*******************************************************************************
+ * Functions
+ ******************************************************************************/
+
+/**
+ * Prints usage message. This function is called if any argument is invalid.
+ */
 INT32 Usage() {
     cerr << "This tool profiles a function\'s memory access pattern." << endl;
     cerr << endl << KNOB_BASE::StringKnobSummary() << endl;
     return -1;
 }
 
-VOID record(THREADID tid, ADDRINT ea, UINT8 type){
+
+/**
+ * Records a read or write access to 'info' array.
+ */
+inline VOID record(THREADID tid, ADDRINT ea, UINT8 type){
+	// First check if thread is inside the function beign profiled.
     UINT64 entCnt = tdata[tid].rtnEntryCnt;
-    if(entCnt > 0 && entCnt <= log_level){
+    if(entCnt > 0){
+		// Inside the function. Atomically update the array index.
         UINT64 idx;
         PIN_GetLock(&lock, tid + 1);
         idx = buf_log_cnt++;
         PIN_ReleaseLock(&lock);
+
+		// Check if log limit reached.
         if(idx < buf_log_lim){
+			// Record entry.
             info[idx].ea = ea;
             info[idx].type = type;
         } else {
+			// Log limit reached. Exit.
+			// Intenally calls FINI function before quitting.
             PIN_ExitApplication(0);
         }
     }
 }
 
-// Print a memory read record
+
+/**
+ * Function for recording read access.
+ */
 VOID RecordMemRead(THREADID tid, ADDRINT ea) {
     record(tid, ea, '0');
 }
 
-// Print a memory write record
+
+/**
+ * Function for recording write access.
+ */
 VOID RecordMemWrite(THREADID tid, ADDRINT ea) {
     record(tid, ea, '1');
 }
-    
+
+
+/**
+ * Instruments instructions having read or write accesses.
+ */
 VOID Instruction(INS ins, VOID *v){
-    UINT32 memOperands = INS_MemoryOperandCount(ins);
+	// Get the memory operand count of the current instruction.
+	UINT32 memOperands = INS_MemoryOperandCount(ins);
 
-    // Iterate over each memory operand of the instruction.
-    for (UINT32 memOp = 0; memOp < memOperands; memOp++) {
-        if (INS_MemoryOperandIsRead(ins, memOp)) {
-            INS_InsertPredicatedCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordMemRead, IARG_THREAD_ID, IARG_MEMORYOP_EA, memOp, IARG_END);
-        }
+	// Iterate over each memory operand of the instruction.
+	for (UINT32 memOp = 0; memOp < memOperands; memOp++) {
+	    if (INS_MemoryOperandIsRead(ins, memOp) && read_log_en) {
+			// Operand is read by this instruction.
+	        INS_InsertPredicatedCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordMemRead, IARG_THREAD_ID, IARG_MEMORYOP_EA, memOp, IARG_END);
+	    }
 
-        if (INS_MemoryOperandIsWritten(ins, memOp)) {
-            INS_InsertPredicatedCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordMemWrite, IARG_THREAD_ID, IARG_MEMORYOP_EA, memOp, IARG_END);
-        }
-    }
+	    if (INS_MemoryOperandIsWritten(ins, memOp) && write_log_en) {
+			// Operand is written by this instruction.
+	        INS_InsertPredicatedCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordMemWrite, IARG_THREAD_ID, IARG_MEMORYOP_EA, memOp, IARG_END);
+	    }
+	}
 }
 
+
+/**
+ * Keeps track of the function entry.
+ */
 VOID RtnEntry(THREADID tid){
     tdata[tid].rtnEntryCnt++;
 }
 
+
+/**
+ * Keeps track of the function exit.
+ */
 VOID RtnLeave(THREADID tid){
     tdata[tid].rtnEntryCnt--;
 }
 
+
+/**
+ * Finds and instruments the requested routine.
+ */
 VOID ImgCallback(IMG img, VOID* arg){
     if (!IMG_IsMainExecutable(img))
         return;
     
+	int match_count = 0;
+	cout << "Tagging functions with \"" << rtn_name << "\"..." << endl;
+
+	//First try for exact match of function
 	for( SEC sec= IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec)){
         if(SEC_Name(sec) == ".text"){
             for(RTN rtn= SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn)){
                 string name = PIN_UndecorateSymbolName(RTN_Name(rtn), UNDECORATION_NAME_ONLY);
-                if(name.find(rtn_name) != string::npos){
-					cout << "-------------------Found " << rtn_name << "---------------------" << endl;
+				// add suffix for openmp functions
+				string rtn_name_omp = rtn_name + "._omp_fn.";	
+
+				// Try exact name match
+                if((name == rtn_name) || (name.find(rtn_name_omp) != string::npos)){
+					// Match found!
+					match_count++;
+					cout << "    Tagged function \"" << name << "\"" << endl;
+
+					// Instrument function entry and exit
 					RTN_Open(rtn);
                     RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)RtnEntry, IARG_THREAD_ID, IARG_END);
                     RTN_InsertCall(rtn, IPOINT_AFTER, (AFUNPTR)RtnLeave, IARG_THREAD_ID, IARG_END);
 					RTN_Close(rtn);
-					return;
 				}
             }
         }
     }
-	cout << "ERROR: Unable to find " << rtn_name << "." << endl;
-    PIN_ExitProcess(11);
+	if(match_count)	return;
+	
+	//Exact match not found. Try to find a function containing the given function name.
+	cout << "Exact match not found! Tagging all functions containing \"" << rtn_name << "\"..." << endl;
+	for( SEC sec= IMG_SecHead(img); SEC_Valid(sec); sec = SEC_Next(sec)){
+        if(SEC_Name(sec) == ".text"){
+            for(RTN rtn= SEC_RtnHead(sec); RTN_Valid(rtn); rtn = RTN_Next(rtn)){
+                string name = PIN_UndecorateSymbolName(RTN_Name(rtn), UNDECORATION_NAME_ONLY);
+
+				// Check if the current routine contains the requested routine name
+                if(name.find(rtn_name) != string::npos){
+					// Match found!
+					match_count++;
+					cout << "    Tagged function \"" << name << "\"" << endl;
+
+					// Instrument function entry and exit
+					RTN_Open(rtn);
+                    RTN_InsertCall(rtn, IPOINT_BEFORE, (AFUNPTR)RtnEntry, IARG_THREAD_ID, IARG_END);
+                    RTN_InsertCall(rtn, IPOINT_AFTER, (AFUNPTR)RtnLeave, IARG_THREAD_ID, IARG_END);
+					RTN_Close(rtn);
+				}
+            }
+        }
+    }
+
+	//Not found
+	if(!match_count){
+		cout << "Unable to find any function containing \"" << rtn_name << "\"... Quitting..." << endl;
+		PIN_ExitProcess(11);
+	}
 }
 
+
+/**
+ * This function is called when exiting Pin. Writes the entries into a log file.
+ */
 VOID Fini(INT32 code, VOID *v) {
+	// Open log file.
     string out_file = knobOutFile.Value();
     ofstream log(out_file.c_str());
     if(!log.is_open()) {
-        cerr << "Cannot open log file." << endl;
+        cerr << "Cannot open log file:" << out_file << endl;
+    	PIN_ExitProcess(11);
     }
+	else{
+		cout << "Writing trace to " << out_file << "... " ;
+	}
 
     //Write headers for csv files
     log << "R0_W1,Addr\n";
     
+	// write log
     if(buf_log_cnt > buf_log_lim){
         buf_log_cnt = buf_log_lim;
     }
     
     for(UINT64 i=0; i < buf_log_cnt; i++){
-        log << info[i].type << "," << info[i].ea << "\n";
+		log << info[i].type << "," << info[i].ea << "\n";
     }
     
+	// cleanup tasks
     log.close();
     delete [] info;
+	delete [] tdata;
+
+	cout << "Done" << endl;
 }
 
+
+/**
+ * Entry point
+ */
 int main(int argc, char *argv[]) {
     if(PIN_Init(argc,argv)) {
         return Usage();
     }
     
+	// Initializations
     PIN_InitLock(&lock);
-    // Initialize symbol processing
     PIN_InitSymbolsAlt(IFUNC_SYMBOLS);
     
     buf_log_lim = knobMaxLog.Value();
-    log_level = knobLogLevel.Value();
     info = new MemInfo[buf_log_lim];
+	UINT64 max_threads = knobMaxThreads.Value();
+	tdata = new ThreadData[max_threads];
+	for(UINT64 i = 0; i < max_threads; ++i){
+		tdata[i].rtnEntryCnt = 0;
+	}
     rtn_name = knobFunctionName.Value();
-    cout << "Profiling for function: " << rtn_name << endl;
-    
+	read_log_en = knobRead.Value();
+	write_log_en = knobWrite.Value();
+
     IMG_AddInstrumentFunction(ImgCallback, NULL);
     INS_AddInstrumentFunction(Instruction, NULL);
     PIN_AddFiniFunction(Fini, NULL);

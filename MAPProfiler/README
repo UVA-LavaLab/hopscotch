@@ -22,41 +22,116 @@ II. Prerequisite
 
 III. Installation
 
-  a) Copy MAPProflier to <pin-tool-path>/source/tools
-  b) Run make from within the MAPProfiler directory. It should create obj-intel64/MAPProfiler.so.
-     The created MAPProfiler.so file will be used as a target of Pin tool.
+  Installation simply requires building the Pin tool object:	
+    ~$ export PIN_ROOT=<path-to-pin-tool>
+    ~$ make
+
+  It should create obj-intel64/MAPProfiler.so. The created MAPProfiler.so file will be used as a target of Pin tool.
   
 
 IV. Usage
 
   Running MAPProfiler is a two step process.
 
-  Step 1: Capturing memory accesses with Pin and MAPProfiler
-  ----------------------------------------------------------
-  The generic command for capturing is:
-  <pin> -t <MAPProfiler.so> [-func <func-to-profile>] [-lim <log-entry-limit>] [-out <log-file>] -- <program-to-profile>
+  Step 1: Capturing memory accesses with logger.py
+  ------------------------------------------------
+    logger.py is a wrapper which invokes appropriate pin tool command.
+
+	~$ ./logger.py [-h] [--version] [--pin-bin <path-to-pin-binary>]
+                 [--read {0,1}] [--write {0,1}] [--trace-file <trace-file>]
+                 [--trace-limit <limit>] [--max-threads <limit>]
+                 [--func <func-to-trace>]
+                 <cmd> ...
+
+    Help on the arguments is shown by -h or --help option.
+
+	positional arguments:
+	  <cmd>                 Command for running the program being profiled.
+	  ...
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --version             show program's version number and exit
+	  --pin-bin <path-to-pin-binary>
+		                    Path to Intel Pin binary. If not given, derives from
+		                    PIN_ROOT environment variable instead. If PIN_ROOT is
+		                    also not given, then uses 'pin' (assumes pin is in
+		                    PATH).
+	  --read {0,1}          Controls read operation tracing. 0: disabled, 1:
+		                    enabled (defalut).
+	  --write {0,1}         Controls write operation tracing. 0: disabled, 1:
+		                    enabled (defalut).
+	  --trace-file <trace-file>
+		                    Memory trace will be written to this file by Pin. The
+		                    file is in simple human readable csv format. (default:
+		                    mem_trace.csv)
+	  --trace-limit <limit>
+		                    Maximum number of accesses to trace. (default:
+		                    1000000)
+	  --max-threads <limit>
+		                    Upper limit of threads for the program being profiled.
+		                    (default: 10000)
+	  --func <func-to-trace>
+		                    Function to trace. Fully qualified name should be used
+		                    for C++ functions. (default: main)
+
+  Sample command (after building example/openmp):
+    ~$ ./logger.py examples/openmp/omp
+ 
+  This will generate the mem_trace.csv file by profiling 'main' function.
+
+  Another sample command:
+    ~$ ./logger.py --func AClass::func1 --read 0 --trace-file another_trace.csv examples/select_func/select_func
   
-  The options are:
-    -func: Name of the function you want to proflie. Default is "main".
-           For C++, full name including namespace and class name is necessary.
-    -lim:  Maximum limit of log entry. Default is 100000.
-    -out:  Name of output log file. Default is "log_map.csv"
+  This generates the another_trace.csv file by profiling the writes inside AClass::func1 function. The log file is plotted in the next step.
 
-  Running the command will generate a log file, which is used in the next step.
 
-  Step 2: Plotting the memory access pattern from log file
-  --------------------------------------------------------
-  Two simple python scripts are provided for plotting an interactive graph.
-  Any of these can be used depending on the usage.
-  ./plotter.py <log-file>
-     Plots the access pattern captured in <log-file> (<log-file> is generated in Step 1).
-     Consequtive read and write access to same address is merged as read-modify-write operations.
+  Step 2: Plotting the memory access pattern from log file using plotter.py
+  -------------------------------------------------------------------------
+  plotter.py is a python script for plotting the log file generated in the previous step.
   
-  ./plotter2.py <log_file> <start_addr> <end_addr> <type= R or W or RW>
-     Plots accesses from <start_addr> to <end_addr>. If type is R, then only read accesses are plotted.
-     If W, then only writes are plotted, and if RW, then both are plotted. Unlike plotter.py, this script
-     does not merge consequtive read and write opetations into read-modify-write.
+	~$ ./plotter.py [-h] [--version] [--out <out-file>] [--min-x <min-x>]
+		              [--max-x <max-x>] [--read {0,1}] [--write {0,1}]
+		              [--rmw {0,1}] [--const {0,1}] [--alpha-read <alpha-read>]
+		              [--alpha-write <alpha-write>] [--alpha-rmw <alpha-rmw>]
+		              <trace-file>
 
+  Help on the script is shown by -h or --help.
+
+	positional arguments:
+	  <trace-file>          Trace file to plot.
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --version             show program's version number and exit
+	  --min-x <min-x>       Minimum value for x-axis range. Use -1 to ignore.
+		                    (default: -1)
+	  --max-x <max-x>       Maximum value for x-axis range. Use -1 to ignore.
+		                    (default: -1)
+	  --read {0,1}          Controls read operation tracing. 0: disabled, 1:
+		                    enabled (defalut).
+	  --write {0,1}         Controls write operation tracing. 0: disabled, 1:
+		                    enabled (defalut).
+	  --rmw {0,1}           Controls merging of read and write to read-modify-
+		                    write. 0: disabled, 1: enabled (defalut).
+	  --const {0,1}         Controls if const address accesses are plotted. 0:
+		                    disabled (default), 1: enabled.
+	  --alpha-read <alpha-read>
+		                    Controls transparency of read points. (default: 0.15)
+	  --alpha-write <alpha-write>
+		                    Controls transparency of write points. (default: 0.15)
+	  --alpha-rmw <alpha-rmw>
+		                    Controls transparency of read-modify-write points.
+		                    (default: 0.15)
+
+  Sample command (assumes mem_trace.csv log file is generated in previous step):
+    ~$ ./plotter.py mem_trace.csv
+
+  This will open an interactive plot of the access pattern logged by mem_trace.csv.
+
+
+Copyright (c) 2019, University of Virginia
+All rights reserved.
 
 
 

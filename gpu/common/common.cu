@@ -1,3 +1,12 @@
+/*******************************************************************************
+ *
+ * File: common.cu
+ * Description: Contains definitions of common utility functions.
+ * 
+ * Author: Alif Ahmed
+ * Date: Aug 06, 2019
+ *
+ ******************************************************************************/
 #include "common.h"
 #include <string>
 #include <iostream>

@@ -1,5 +1,14 @@
 #!/usr/bin/python3
 
+###############################################################################
+#
+# Roofline plotter for x86_64 CPU.
+#
+# Author: 	Alif Ahmed
+# email: 	alifahmed@virginia.edu
+# Updated: 	Aug 06, 2019
+#
+###############################################################################
 import argparse
 import json
 import subprocess
@@ -7,12 +16,19 @@ import sys
 import shlex
 import matplotlib.pyplot as plt
 
+
+###############################################################################
+# Function definitions
+###############################################################################
+
+# Check if sval is a positive integer. Used for argument validity checking.
 def positive_integer(sval):
 	ival = int(sval)
 	if ival <= 0:
 		raise argparse.ArgumentTypeError("%s must be a positive integer" % sval)
 	return ival
 
+# Build and run the roofline kernel with different configurations
 def run_bench(data_type, args):
 	ai = []
 	bw = []
@@ -34,6 +50,10 @@ def run_bench(data_type, args):
 
 	return ai, bw, perf
 
+
+###############################################################################
+# Arguments
+###############################################################################
 parser = argparse.ArgumentParser(allow_abbrev=False)
 
 parser.add_argument('--working-set-size', default='2048', type=positive_integer, metavar='X',
@@ -62,6 +82,10 @@ parser.add_argument('--plot-file', default='roofline.pdf', type=str, metavar='X'
 
 args = parser.parse_args()
 
+
+###############################################################################
+# Validate arguments
+###############################################################################
 if (args.flop_min > args.flop_max):
 	raise argparse.ArgumentTypeError("--flop-min must be <= --flop-max.")
 
@@ -69,13 +93,18 @@ if (args.flop_rate <= 1):
 	raise argparse.ArgumentTypeError("--flop-rate must be greater than 1.0")
 
 
+
+###############################################################################
+# Run kernel and plot the results
+###############################################################################
 print("")
 print("Working set size: " + str(args.working_set_size) + " MB")
 print("================================================================================")
 print("Type         FLOP/elem           AI            BW (GB/s)          Perf (GFLOP/s)")
 print("================================================================================")
 
-# run kernel for single precision floating point
+
+# set plot properties
 plt.figure()
 plt.xlabel('Arithmetic Intensity (FLOP/Byte)')
 plt.ylabel('Performance (GFLOP/s)')
@@ -85,6 +114,7 @@ plt.title('Roofline Plot')
 plt.grid(which='major', axis='both')
 plt.grid(which='minor', axis='both', linestyle='--')
 
+# run kernel for single precision floating point
 if (args.disable_sp == False):
 	sp_ai, sp_bw, sp_perf = run_bench("1", args)
 	plt.plot(sp_ai, sp_perf, '-bo', label='Single Precision')
@@ -96,6 +126,8 @@ if (args.disable_dp == False):
 	plt.plot(dp_ai, dp_perf, '-r^', label='Double Precision')
 
 plt.legend()
+
+# save the plot
 plt.savefig(args.plot_file, format='pdf', bbox_inches='tight')
 
 print("================================================================================")

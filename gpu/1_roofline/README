@@ -1,0 +1,42 @@
+
+Micro-benchmark for Measuring Roofline Plot
+===========================================
+
+Use the roofline.py python wrapper to run the benchmark. By default, result plot will be save as roofline.pdf.
+
+To run with default options:
+	~$ ./roofline.py
+
+To see all the available options:
+	~$ ./roofline.py --help
+
+Usage
+=====
+	~$ ./roofline.py [-h] [--device X] [--working-set-size X] [--ntries X]
+		               [--flop-min X] [--flop-max X] [--flop-rate X]
+		               [--disable-sp] [--disable-dp] [--plot-file X]
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  --device X            Device on which the benchmark will run. (default: 0)
+	  --working-set-size X  Working set size in MB. (default: half of global
+		                    memory of selected device)
+	  --ntries X            Number of runs for each configuration (default: 5)
+	  --flop-min X          Minimum value of FLOPs per data element. (default: 1)
+	  --flop-max X          Maximum value of FLOPs per data element. Actual value
+		                    may differ depending on --min-flops and --flop-rate.
+		                    (default: 8192)
+	  --flop-rate X         Increament rate of FLOPs per data element. (default: 2)
+	  --disable-sp          Disable roofline plot for single precision floating
+		                    point. Enabled by default.
+	  --disable-dp          Disable roofline plot for double precision floating
+		                    point. Enabled by default.
+	  --plot-file X         Roofline plot will be saved in this file. (default:
+		                    roofline.pdf)
+
+Notes:
+======
+1. On a multi-GPU platform, use --device option to select on which GPU to run the benchmark on.
+2. FLOPs per element of the kernel is determined by the --flop-min, --flop-rate and --flop-max options.
+   It starts with --flop-min, and then increases at --flop-rate rate until --flop-max is reached.
+	

@@ -1,3 +1,13 @@
+/*******************************************************************************
+ *
+ * File: hs_latency.cpp
+ * Description: Measures latency. Run by latency.py with different working set 
+ * size. Uses single threaded pointer chasing kernel.
+ * 
+ * Author: Alif Ahmed
+ * Date: Aug 06, 2019
+ *
+ ******************************************************************************/
 #include "common.h"
 
 int main(){

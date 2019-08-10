@@ -10,6 +10,8 @@
 #
 ###############################################################################
 
+# Kernel is built every time, even no source code is changed.
+# This is because the kernel is compiled by a script with different configurations.
 .PHONY: all clean kernel
 
 INC_DIR = ../include

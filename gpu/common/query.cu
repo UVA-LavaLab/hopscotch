@@ -1,9 +1,22 @@
+/*******************************************************************************
+ *
+ * File: query.cu
+ * Description: Query device properties of all the cuda gpus present in the
+ *              system and write them in JSON format.
+ * 
+ * Author: Alif Ahmed
+ * Date: Aug 06, 2019
+ *
+ ******************************************************************************/
 #include "common.h"
 #include <iostream>
 #include <cuda.h>
 
 using namespace std;
 
+/**
+ * Query some of the device properties. Writes to stdout in JSON format.
+ */
 void printDeviceInfo(int device) {
 	cudaDeviceProp prop;
 	CUDA_CHECK_RETURN(cudaGetDeviceProperties(&prop, device));

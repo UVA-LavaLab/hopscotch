@@ -1,0 +1,13 @@
+Examples showcasing MAPProfiler usage.
+
+1. openmp: 
+   Multithreaded (with OpenMp) sequential read, write and read-modify-write operations.
+
+2. seq:
+   Single threaded sequential read, write and read-modify-write operations.
+
+3. rand:
+   Single threaded rendom and sequential read, write and read-modify-write operations.
+
+4. select_func:
+   Example showing function selection.
