@@ -13,7 +13,7 @@
 typedef double data_t;
 
 #ifndef HS_ARRAY_ELEM
-#define HS_ARRAY_ELEM       (64UL*1024*1024)
+#define HS_ARRAY_ELEM       (256UL*1024*1024)
 #endif
 
 //#ifndef HS_TILE_L

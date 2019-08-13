@@ -14,6 +14,7 @@ import json
 import subprocess
 import sys
 import shlex
+import math
 import matplotlib.pyplot as plt
 
 
@@ -34,20 +35,21 @@ def run_bench(data_type, args):
 	bw = []
 	perf = []
 	curr_flop = args.flop_min
-	while(curr_flop <= args.flop_max):
-		make_cmd = 	"make kernel USER_DEFS=\"-DFLOPS_PER_ELEM=" + str(curr_flop) + " -DDATA_T_ENC=" + data_type \
-					+ " -DHS_ARRAY_SIZE_MB=" + str(args.working_set_size) \
-					+ " -DNTRIES=" + str(args.ntries) + "\""
-		subprocess.run(shlex.split(make_cmd), check=True, stdout=subprocess.DEVNULL);
-		#run kernel
-		results_str = subprocess.check_output(shlex.split("./kernel"), universal_newlines=True)
-		print(results_str, end='')
-		results_arr = results_str.split()
-		ai.append(float(results_arr[2]))
-		bw.append(float(results_arr[3]))
-		perf.append(float(results_arr[4]))
-		curr_flop = int(curr_flop * args.flop_rate)
-
+	with open('.results_' + data_type + '.tmp', 'w') as file_out:
+		while(curr_flop <= args.flop_max):
+			make_cmd = 	"make kernel USER_DEFS=\"-DFLOPS_PER_ELEM=" + str(curr_flop) + " -DDATA_T_ENC=" + data_type \
+						+ " -DHS_ARRAY_SIZE_BYTE=" + str(args.working_set_size) \
+						+ " -DNTRIES=" + str(args.ntries) + "\""
+			subprocess.run(shlex.split(make_cmd), check=True, stdout=subprocess.DEVNULL);
+			#run kernel
+			results_str = subprocess.check_output(shlex.split("./kernel"), universal_newlines=True)
+			file_out.write(results_str)
+			print(results_str, end='')
+			results_arr = results_str.split()
+			ai.append(float(results_arr[2]))
+			bw.append(float(results_arr[3]))
+			perf.append(float(results_arr[4]))
+			curr_flop = math.ceil(curr_flop * args.flop_rate)
 	return ai, bw, perf
 
 
@@ -56,8 +58,8 @@ def run_bench(data_type, args):
 ###############################################################################
 parser = argparse.ArgumentParser(allow_abbrev=False)
 
-parser.add_argument('--working-set-size', default='2048', type=positive_integer, metavar='X',
-					help='Working set size in MB. (default: %(default)s)')
+parser.add_argument('--working-set-size', default='2147483648', type=positive_integer, metavar='X',
+					help='Working set size in bytes. (default: %(default)s)')
 
 parser.add_argument('--ntries', default='10', type=positive_integer, metavar='X',
 					help='Number of runs for each configuration (default: %(default)s)')
@@ -98,7 +100,7 @@ if (args.flop_rate <= 1):
 # Run kernel and plot the results
 ###############################################################################
 print("")
-print("Working set size: " + str(args.working_set_size) + " MB")
+print("Working set size: " + str(args.working_set_size) + " bytes")
 print("================================================================================")
 print("Type         FLOP/elem           AI            BW (GB/s)          Perf (GFLOP/s)")
 print("================================================================================")
@@ -117,13 +119,17 @@ plt.grid(which='minor', axis='both', linestyle='--')
 # run kernel for single precision floating point
 if (args.disable_sp == False):
 	sp_ai, sp_bw, sp_perf = run_bench("1", args)
-	plt.plot(sp_ai, sp_perf, '-bo', label='Single Precision')
+	plt.plot(sp_ai, sp_perf, '-bo', label='Performance (SP)')
+	mb_sp = max(sp_perf)/max(sp_bw)
+	plt.axvline(x=mb_sp, color='b', linestyle='--', label='Machine Balance (SP)')
 
 
 # run kernel for double precision floating point
 if (args.disable_dp == False):
 	dp_ai, dp_bw, dp_perf = run_bench("0", args)
-	plt.plot(dp_ai, dp_perf, '-r^', label='Double Precision')
+	plt.plot(dp_ai, dp_perf, '-r^', label='Performance (DP)')
+	mb_dp = max(dp_perf)/max(dp_bw)
+	plt.axvline(x=mb_dp, color='r', linestyle='--', label='Machine Balance (DP)')
 
 plt.legend()
 
@@ -131,6 +137,8 @@ plt.legend()
 plt.savefig(args.plot_file, format='pdf', bbox_inches='tight')
 
 print("================================================================================")
+print("Machine Balance (Single Precision): %0.1f" % mb_sp)
+print("Machine Balance (Double Precision): %0.1f" % mb_dp)
 print("Roofline plot saved as " + args.plot_file)
 print("")
 

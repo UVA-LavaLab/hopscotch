@@ -14,6 +14,7 @@ import json
 import subprocess
 import sys
 import shlex
+import math
 import matplotlib.pyplot as plt
 
 
@@ -34,20 +35,21 @@ def run_bench(data_type, args):
 	bw = []
 	perf = []
 	curr_flop = args.flop_min
-	while(curr_flop <= args.flop_max):
-		make_cmd = 	"make kernel USER_DEFS=\"-DFLOPS_PER_ELEM=" + str(curr_flop) + " -DDATA_T=" + data_type \
-					+ " -DHS_ARRAY_SIZE_BYTE=" + str(args.working_set_size * 1024 * 1024) \
-					+ " -DNTRIES=" + str(args.ntries) + " -DHS_DEVICE=" + str(args.device) + "\""
-		subprocess.run(shlex.split(make_cmd), check=True, stdout=subprocess.DEVNULL);
-		#run kernel
-		results_str = subprocess.check_output(shlex.split("./kernel"), universal_newlines=True)
-		print(results_str, end='')
-		results_arr = results_str.split()
-		ai.append(float(results_arr[2]))
-		bw.append(float(results_arr[3]))
-		perf.append(float(results_arr[4]))
-		curr_flop = int(curr_flop * args.flop_rate)
-
+	with open('.results_' + data_type + '.tmp', 'w') as file_out:
+		while(curr_flop <= args.flop_max):
+			make_cmd = 	"make kernel USER_DEFS=\"-DFLOPS_PER_ELEM=" + str(curr_flop) + " -DDATA_T=" + data_type \
+						+ " -DHS_ARRAY_SIZE_BYTE=" + str(args.working_set_size) \
+						+ " -DNTRIES=" + str(args.ntries) + " -DHS_DEVICE=" + str(args.device) + "\""
+			subprocess.run(shlex.split(make_cmd), check=True, stdout=subprocess.DEVNULL);
+			#run kernel
+			results_str = subprocess.check_output(shlex.split("./kernel"), universal_newlines=True)
+			file_out.write(results_str)
+			print(results_str, end='')
+			results_arr = results_str.split()
+			ai.append(float(results_arr[2]))
+			bw.append(float(results_arr[3]))
+			perf.append(float(results_arr[4]))
+			curr_flop = math.ceil(curr_flop * args.flop_rate)
 	return ai, bw, perf
 
 
@@ -59,7 +61,7 @@ parser.add_argument('--device', default ='0', type=int, metavar='X',
 					help='Device on which the benchmark will run. (default: %(default)s)')
 
 parser.add_argument('--working-set-size', type=positive_integer, metavar='X',
-					help='Working set size in MB. (default: half of global memory of selected device)')
+					help='Working set size in bytes. (default: half of global memory of selected device)')
 
 parser.add_argument('--ntries', default='5', type=positive_integer, metavar='X',
 					help='Number of runs for each configuration (default: %(default)s)')
@@ -117,14 +119,16 @@ if (args.device >= num_device):
 selected_device = devices[args.device]
 print("Selected [device " + str(args.device) + "]. Use \"--device\" to run on other available devices.")
 
-global_mem_mb = selected_device["totalGlobalMem"] // 1024 // 1024
+global_mem_bytes = selected_device["totalGlobalMem"]
 if args.working_set_size == None:
-	args.working_set_size = global_mem_mb // 2
+	args.working_set_size = global_mem_bytes // 2
 
-if args.working_set_size > global_mem_mb:
-	raise argument.ArgumentTypeError("--working-set-size cannot be more than %d for the selected device (%d)" % global_mem_mb % args.device);
+if args.working_set_size > global_mem_bytes:
+	raise argument.ArgumentTypeError("--working-set-size cannot be more than %d for the selected device (%d)" % global_mem_bytes % args.device);
 
-print("Working set size: " + str(args.working_set_size) + " MB")
+args.working_set_size = (args.working_set_size // 1024 // 1024) * 1024 *1024;
+
+print("Aligned working set size: " + str(args.working_set_size) + " bytes")
 
 if (args.flop_min > args.flop_max):
 	raise argparse.ArgumentTypeError("--flop-min must be <= --flop-max.")
@@ -149,18 +153,22 @@ plt.xscale('log')
 plt.yscale('log')
 plt.title('Roofline Plot (' + selected_device["name"] + ')')
 plt.grid(which='major', axis='both')
-plt.grid(which='minor', axis='both', linestyle='--')
+plt.grid(which='minor', axis='both', linestyle=':')
 
 # run kernel for single precision floating point
 if (args.disable_sp == False):
 	sp_ai, sp_bw, sp_perf = run_bench("float", args)
-	plt.plot(sp_ai, sp_perf, '-bo', label='Single Precision')
+	plt.plot(sp_ai, sp_perf, '-bo', label='Performance (SP)')
+	mb_sp = max(sp_perf)/max(sp_bw)
+	plt.axvline(x=mb_sp, color='b', linestyle='--', label='Machine Balance (SP)')
 
 
 # run kernel for double precision floating point
 if (args.disable_dp == False):
 	dp_ai, dp_bw, dp_perf = run_bench("double", args)
-	plt.plot(dp_ai, dp_perf, '-r^', label='Double Precision')
+	plt.plot(dp_ai, dp_perf, '-r^', label='Performance (DP)')
+	mb_dp = max(dp_perf)/max(dp_bw)
+	plt.axvline(x=mb_dp, color='r', linestyle='--', label='Machine Balance (DP)')
 
 plt.legend()
 
@@ -168,6 +176,8 @@ plt.legend()
 plt.savefig(args.plot_file, format='pdf', bbox_inches='tight')
 
 print("================================================================================")
+print("Machine Balance (Single Precision): %0.1f" % mb_sp)
+print("Machine Balance (Double Precision): %0.1f" % mb_dp)
 print("Roofline plot saved as " + args.plot_file)
 print("")
 

@@ -134,8 +134,8 @@ int main(){
 	printf("%-8s%11d%17.2f%19.2f%19.2f\n",
 			XSTR(DATA_T),
 			FLOPS_PER_ELEM,
-			FLOPS_PER_ELEM * 1.0f / sizeof(DATA_T) / 2.0f,
-			(HS_ARRAY_SIZE_BYTE * 2.0) / time_min / 1024 / 1024 / 1024,
+			FLOPS_PER_ELEM / 2.0 / sizeof(DATA_T),
+			(HS_ARRAY_SIZE_BYTE * 2.0) / time_min / 1000.0 / 1000.0 / 1000.0,
 			(HS_ARRAY_ELEM * FLOPS_PER_ELEM) / time_min / 1000.0 / 1000.0 / 1000.0);
 
 	// Done, free allocated memory.

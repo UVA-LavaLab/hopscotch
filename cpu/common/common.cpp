@@ -109,21 +109,27 @@ void print_thread_num() {
 }
 
 void default_init(){
-    memset(a, 1, HS_ARRAY_SIZE_BTYE);
-    memset(b, 2, HS_ARRAY_SIZE_BTYE);
-    memset(c, 3, HS_ARRAY_SIZE_BTYE);
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
+        a[i] = 1.0;
+		b[i] = 2.0;
+        c[i] = 3.0;
+    }
 }
 
 void init_a(){
     #pragma omp parallel for
     for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
-        a[i] = 1.0 + 1e-8;
+        a[i] = 1.0;
     }
 }
 
 void init_ab(){
-    memset(a, 1, HS_ARRAY_SIZE_BTYE);
-    memset(b, 2, HS_ARRAY_SIZE_BTYE);
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
+        a[i] = 1.0;
+		b[i] = 2.0;
+    }
 }
 
 //init pointer chasing to array 'ptr' with hamiltonian cycle

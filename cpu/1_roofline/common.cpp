@@ -14,7 +14,7 @@
 
 
 /*******************************************************************************
- * Allocates 4K aligned memory. Portable.
+ * Allocates 4096 bytes aligned memory. Portable.
  ******************************************************************************/
 void* hs_alloc(size_t size){
     void* ptr = aligned_alloc(4096, size);

@@ -134,8 +134,8 @@ int main(int argc, char** argv) {
 	printf("%-8s%11d%17.2f%19.2f%19.2f\n",
 			XSTR(DATA_T),
 			FLOPS_PER_ELEM,
-			FLOPS_PER_ELEM * 1.0f / sizeof(DATA_T) / 2.0f,
-			(HS_ARRAY_SIZE_BYTE * 2.0 * 1000.0) / minTime / 1024 / 1024 / 1024,
+			FLOPS_PER_ELEM / 2.0f / sizeof(DATA_T),
+			(HS_ARRAY_SIZE_BYTE * 2.0) / minTime / 1000.0 / 1000.0,
 			(HS_ARRAY_ELEM * FLOPS_PER_ELEM) / minTime / 1000.0 / 1000.0);
 
 

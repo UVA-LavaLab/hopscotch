@@ -40,18 +40,14 @@
 #endif
 
 // Array size. Set by roofline.py during compilation.
-#ifndef HS_ARRAY_SIZE_MB
-#define HS_ARRAY_SIZE_MB	(1024UL)
+#ifndef HS_ARRAY_SIZE_BYTE
+#define HS_ARRAY_SIZE_BYTE	(1024UL * 1024 * 1024 * 2)
 #endif
 
 // Number of tries. Best performance is taken.
 #ifndef NTRIES
 #define NTRIES				5
 #endif
-
-// Array size. Derived from HS_ARRAY_SIZE_MB
-#define HS_ARRAY_SIZE_KB	(HS_ARRAY_SIZE_MB * 1024UL)
-#define HS_ARRAY_SIZE_BYTE	(HS_ARRAY_SIZE_KB * 1024UL)
 
 // Number of array elements in working set
 #define HS_ARRAY_ELEM		(HS_ARRAY_SIZE_BYTE/sizeof(DATA_T))
