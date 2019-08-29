@@ -25,11 +25,14 @@ CPPFLAGS = -Ofast -fopenmp -march=native -I$(INC_DIR) -Wno-unused-variable -std=
 	
 BENCH_SRC = $(wildcard *.cpp)
 
-all: $(TARGET)
+#all: $(TARGET)
+all: workload back
 	
 clean:
 	@rm -rf $(KERN_OBJ)
 	@rm -rf $(TARGET)
+	@rm -rf back
+	@rm -rf workload
 	
 %.o: %.cpp $(HEADERS)
 	@g++ $(CPPFLAGS) -c -o $@ $<
@@ -37,3 +40,9 @@ clean:
 $(TARGET): $(KERN_OBJ) $(BENCH_SRC)
 	@g++ $(CPPFLAGS) $^ -o $@
 
+back: background_job.o $(CMN_DIR)/common.o
+	@g++ $(CPPFLAGS) $^ -o $@
+
+workload: workload.o $(CMN_DIR)/common.o
+	@g++ $(CPPFLAGS) $^ -o $@
+	

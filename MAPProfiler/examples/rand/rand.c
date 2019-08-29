@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * File: rand.cpp
+ * File: rand.c
  * Description: Example with random access patterns.
  * 
  * Author:  Alif Ahmed

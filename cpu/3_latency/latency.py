@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 ###############################################################################
 #
@@ -95,7 +95,7 @@ plt.xscale('log')
 plt.yscale('log')
 plt.title('Latency Plot')
 plt.grid(which='major', axis='both')
-plt.grid(which='minor', axis='both', linestyle='--')
+plt.grid(which='minor', axis='both', linestyle=':')
 
 # run kernel
 wss, latency = run_bench(args)

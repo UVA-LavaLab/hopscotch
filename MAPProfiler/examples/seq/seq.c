@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * File: seq.cpp
+ * File: seq.c
  * Description: Simplest example with sequential access patterns.
  * 
  * Author:  Alif Ahmed

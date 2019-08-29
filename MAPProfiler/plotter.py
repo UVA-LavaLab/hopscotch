@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import sys
 import csv
@@ -158,14 +158,15 @@ dfW = df.loc[df.R0_W1 == WRITE_TYPE]
 dfRMW = df.loc[df.R0_W1 == RMW_TYPE]
 
 # plot
-plt.figure(figsize=(15,10))
+#plt.figure(figsize=(15,10))
+plt.figure()
 plt.title("Memory Access Pattern Visualizer")
 plt.xlabel("Reference #")
 plt.ylabel("Relative Address")
 plt.plot(dfR.index, dfR.Addr, 'r^', alpha=args.alpha_read, label='Read')
 plt.plot(dfW.index, dfW.Addr, 'b.', alpha=args.alpha_write, label='Write')
 plt.plot(dfRMW.index, dfRMW.Addr, 'gs', alpha=args.alpha_rmw, label='Read-modify-write')
-plt.legend(loc='upper left')
+#plt.legend(loc='upper left')
 plt.show()
 
 

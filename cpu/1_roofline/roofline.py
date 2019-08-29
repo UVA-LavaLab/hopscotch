@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 ###############################################################################
 #
@@ -114,7 +114,7 @@ plt.xscale('log')
 plt.yscale('log')
 plt.title('Roofline Plot')
 plt.grid(which='major', axis='both')
-plt.grid(which='minor', axis='both', linestyle='--')
+plt.grid(which='minor', axis='both', linestyle=':')
 
 # run kernel for single precision floating point
 if (args.disable_sp == False):

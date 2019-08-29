@@ -11,3 +11,12 @@ Examples showcasing MAPProfiler usage.
 
 4. select_func:
    Example showing function selection.
+
+5. gather:
+   Gather operation. Sequential + random read, sequential write.
+
+6. scatter:
+   Scatter operation. Sequential read, random write.
+
+7. scatter_gather:
+   Scatter_gather operation. Sequential + random read, random write.

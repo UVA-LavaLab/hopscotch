@@ -169,6 +169,10 @@ VOID RecordMemWrite(THREADID tid, ADDRINT ea) {
  * Instruments instructions having read or write accesses.
  */
 VOID Instruction(INS ins, VOID *v){
+	if(INS_IsStackRead(ins) || INS_IsStackWrite(ins)){
+		return;
+	}
+
 	// Get the memory operand count of the current instruction.
 	UINT32 memOperands = INS_MemoryOperandCount(ins);
 
@@ -179,7 +183,7 @@ VOID Instruction(INS ins, VOID *v){
 	        INS_InsertPredicatedCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordMemRead, IARG_THREAD_ID, IARG_MEMORYOP_EA, memOp, IARG_END);
 	    }
 
-	    if (INS_MemoryOperandIsWritten(ins, memOp) && write_log_en) {
+	    else if (INS_MemoryOperandIsWritten(ins, memOp) && write_log_en) {
 			// Operand is written by this instruction.
 	        INS_InsertPredicatedCall(ins, IPOINT_BEFORE, (AFUNPTR)RecordMemWrite, IARG_THREAD_ID, IARG_MEMORYOP_EA, memOp, IARG_END);
 	    }

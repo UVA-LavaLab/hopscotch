@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * File: omp.cpp
+ * File: omp.c
  * Description: Example for memory access pattern of sequential access with 
  * openmp.
  * 
