@@ -22,7 +22,7 @@ II. Prerequisite
 
 III. Installation
 
-  Installation simply requires building the Pin tool object:	
+  Installation simply requires building the Pin tool object:    
     ~$ export PIN_ROOT=<path-to-pin-tool>
     ~$ make
 
@@ -37,45 +37,45 @@ IV. Usage
   ------------------------------------------------
     logger.py is a wrapper which invokes appropriate pin tool command.
 
-	~$ logger.py [-h] [--version] [--pin-bin <path-to-pin-binary>]
+    ~$ logger.py [-h] [--version] [--pin-bin <path-to-pin-binary>]
                  [--read {0,1}] [--write {0,1}] [--stack-log {0,1}]
                  [--ip-log {0,1}] [--trace-file <trace-file>]
                  [--trace-limit <limit>] [--max-threads <limit>]
                  [--func <func-to-trace>]
                  <cmd>
 
-	positional arguments:
-	  <cmd>                 Command for running the program being profiled.
+    positional arguments:
+      <cmd>                 Command for running the program being profiled.
 
-	optional arguments:
-	  -h, --help            show help message and exit
-	  --version             show program's version number and exit
-	  --pin-bin <path-to-pin-binary>
-		                    Path to Intel Pin binary. If not given, derives from
-		                    PIN_ROOT environment variable instead. If PIN_ROOT is
-		                    also not given, then uses 'pin' (assumes pin is in
-		                    PATH).
-	  --read {0,1}          Controls read operation tracing. 0: disabled, 1:
-		                    enabled (defalut).
-	  --write {0,1}         Controls write operation tracing. 0: disabled, 1:
-		                    enabled (defalut).
-	  --stack-log {0,1}     Controls stack based access logging. 0: disabled
-		                    (default), 1: enabled.
-	  --ip-log {0,1}        Controls instruction pointer relative access logging.
-		                    0: disabled, 1: enabled (default).
-	  --trace-file <trace-file>
-		                    Memory trace will be written to this file by Pin. The
-		                    file is in simple human readable csv format. (default:
-		                    mem_trace.csv)
-	  --trace-limit <limit>
-		                    Maximum number of accesses to trace. (default:
-		                    1000000)
-	  --max-threads <limit>
-		                    Upper limit of threads for the program being profiled.
-		                    (default: 10000)
-	  --func <func-to-trace>
-		                    Function to trace. Fully qualified name should be used
-		                    for C++ functions. (default: main)
+    optional arguments:
+      -h, --help            show help message and exit
+      --version             show program's version number and exit
+      --pin-bin <path-to-pin-binary>
+                            Path to Intel Pin binary. If not given, derives from
+                            PIN_ROOT environment variable instead. If PIN_ROOT is
+                            also not given, then uses 'pin' (assumes pin is in
+                            PATH).
+      --read {0,1}          Controls read operation tracing. 0: disabled, 1:
+                            enabled (defalut).
+      --write {0,1}         Controls write operation tracing. 0: disabled, 1:
+                            enabled (defalut).
+      --stack-log {0,1}     Controls stack based access logging. 0: disabled
+                            (default), 1: enabled.
+      --ip-log {0,1}        Controls instruction pointer relative access logging.
+                            0: disabled, 1: enabled (default).
+      --trace-file <trace-file>
+                            Memory trace will be written to this file by Pin. The
+                            file is in simple human readable csv format. (default:
+                            mem_trace.csv)
+      --trace-limit <limit>
+                            Maximum number of accesses to trace. (default:
+                            1000000)
+      --max-threads <limit>
+                            Upper limit of threads for the program being profiled.
+                            (default: 10000)
+      --func <func-to-trace>
+                            Function to trace. Fully qualified name should be used
+                            for C++ functions. (default: main)
 
 
   Sample command (after building example/openmp):
@@ -93,39 +93,39 @@ IV. Usage
   -------------------------------------------------------------------------
   plotter.py is a python script for plotting the log file generated in the previous step.
   
-	~$ ./plotter.py [-h] [--version] [--out <out-file>] [--min-x <min-x>]
-		              [--max-x <max-x>] [--read {0,1}] [--write {0,1}]
-		              [--rmw {0,1}] [--const {0,1}] [--alpha-read <alpha-read>]
-		              [--alpha-write <alpha-write>] [--alpha-rmw <alpha-rmw>]
-		              <trace-file>
+    ~$ ./plotter.py [-h] [--version] [--out <out-file>] [--min-x <min-x>]
+                      [--max-x <max-x>] [--read {0,1}] [--write {0,1}]
+                      [--rmw {0,1}] [--const {0,1}] [--alpha-read <alpha-read>]
+                      [--alpha-write <alpha-write>] [--alpha-rmw <alpha-rmw>]
+                      <trace-file>
 
   Help on the script is shown by -h or --help.
 
-	positional arguments:
-	  <trace-file>          Trace file to plot.
+    positional arguments:
+      <trace-file>          Trace file to plot.
 
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  --version             show program's version number and exit
-	  --min-x <min-x>       Minimum value for x-axis range. Use -1 to ignore.
-		                    (default: -1)
-	  --max-x <max-x>       Maximum value for x-axis range. Use -1 to ignore.
-		                    (default: -1)
-	  --read {0,1}          Controls read operation tracing. 0: disabled, 1:
-		                    enabled (defalut).
-	  --write {0,1}         Controls write operation tracing. 0: disabled, 1:
-		                    enabled (defalut).
-	  --rmw {0,1}           Controls merging of read and write to read-modify-
-		                    write. 0: disabled, 1: enabled (defalut).
-	  --const {0,1}         Controls if const address accesses are plotted. 0:
-		                    disabled (default), 1: enabled.
-	  --alpha-read <alpha-read>
-		                    Controls transparency of read points. (default: 0.15)
-	  --alpha-write <alpha-write>
-		                    Controls transparency of write points. (default: 0.15)
-	  --alpha-rmw <alpha-rmw>
-		                    Controls transparency of read-modify-write points.
-		                    (default: 0.15)
+    optional arguments:
+      -h, --help            show this help message and exit
+      --version             show program's version number and exit
+      --min-x <min-x>       Minimum value for x-axis range. Use -1 to ignore.
+                            (default: -1)
+      --max-x <max-x>       Maximum value for x-axis range. Use -1 to ignore.
+                            (default: -1)
+      --read {0,1}          Controls read operation tracing. 0: disabled, 1:
+                            enabled (defalut).
+      --write {0,1}         Controls write operation tracing. 0: disabled, 1:
+                            enabled (defalut).
+      --rmw {0,1}           Controls merging of read and write to read-modify-
+                            write. 0: disabled, 1: enabled (defalut).
+      --const {0,1}         Controls if const address accesses are plotted. 0:
+                            disabled (default), 1: enabled.
+      --alpha-read <alpha-read>
+                            Controls transparency of read points. (default: 0.15)
+      --alpha-write <alpha-write>
+                            Controls transparency of write points. (default: 0.15)
+      --alpha-rmw <alpha-rmw>
+                            Controls transparency of read-modify-write points.
+                            (default: 0.15)
 
   Sample command (assumes mem_trace.csv log file is generated in previous step):
     ~$ ./plotter.py mem_trace.csv

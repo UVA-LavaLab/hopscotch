@@ -20,15 +20,15 @@
 /******************************************************************************
  * Defines
  ******************************************************************************/
-#define XSTR(s)	STR(s)
-#define STR(s)	#s
+#define XSTR(s) STR(s)
+#define STR(s)  #s
 
 // Data type encoding. Used to dynamically generate SIMD intrinsics.
-#define DATA_TYPE_DOUBLE	0
-#define	DATA_TYPE_FLOAT		1
+#define DATA_TYPE_DOUBLE    0
+#define DATA_TYPE_FLOAT     1
 
 #ifndef DATA_T_ENC
-#define DATA_T_ENC			DATA_TYPE_DOUBLE
+#define DATA_T_ENC          DATA_TYPE_DOUBLE
 #endif
 
 #if DATA_T_ENC == DATA_TYPE_DOUBLE
@@ -41,16 +41,16 @@
 
 // Array size. Set by roofline.py during compilation.
 #ifndef HS_ARRAY_SIZE_BYTE
-#define HS_ARRAY_SIZE_BYTE	(1024UL * 1024 * 1024 * 2)
+#define HS_ARRAY_SIZE_BYTE  (1024UL * 1024 * 1024 * 2)
 #endif
 
 // Number of tries. Best performance is taken.
 #ifndef NTRIES
-#define NTRIES				5
+#define NTRIES              5
 #endif
 
 // Number of array elements in working set
-#define HS_ARRAY_ELEM		(HS_ARRAY_SIZE_BYTE/sizeof(DATA_T))
+#define HS_ARRAY_ELEM       (HS_ARRAY_SIZE_BYTE/sizeof(DATA_T))
 
 
 /******************************************************************************

@@ -3,20 +3,20 @@ Examples showcasing MAPProfiler usage.
 Build instructions
 ==================
 
-	a) To build all examples, run 'make' from the current (examples) directory. e.g.,
-		$ make
-	b) To build a specific example, run 'make <example_name>' from the current directory. e.g.,
-		$ make scatter
-	c) Each example have their own makefile, which can also be uesd to build. e.g.,
-		$ cd scatter
-		$ make
-	d) To clean all examples, run 'clean' from the current directory. e.g.,
-		$ make clean
-	e) To clean a specific example, run 'make <example_name>.clean'. e.g.,
-		$ make scatter.clean
-	f) Another way of cleaning specific examples:
-		$ cd scatter
-		$ make clean
+    a) To build all examples, run 'make' from the current (examples) directory. e.g.,
+        $ make
+    b) To build a specific example, run 'make <example_name>' from the current directory. e.g.,
+        $ make scatter
+    c) Each example have their own makefile, which can also be uesd to build. e.g.,
+        $ cd scatter
+        $ make
+    d) To clean all examples, run 'clean' from the current directory. e.g.,
+        $ make clean
+    e) To clean a specific example, run 'make <example_name>.clean'. e.g.,
+        $ make scatter.clean
+    f) Another way of cleaning specific examples:
+        $ cd scatter
+        $ make clean
 
 
 Included examples

@@ -18,9 +18,9 @@ void w_seq_memset(data_t* __restrict__ a){
 
 
 res_t run_w_seq_memset(double allowed_time, data_t* a){
-	res_t result;
-	run_kernel(w_seq_memset(a), allowed_time, result);
-	result.bytes_read = 0;
-	result.bytes_write = result.iters * WSS_BYTES;
-	return result;
+    res_t result;
+    run_kernel(w_seq_memset(a), allowed_time, result);
+    result.bytes_read = 0;
+    result.bytes_write = result.iters * WSS_BYTES;
+    return result;
 }

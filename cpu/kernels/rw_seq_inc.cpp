@@ -20,9 +20,9 @@ void rw_seq_inc(data_t* __restrict__ a){
 
 
 res_t run_rw_seq_inc(double allowed_time, data_t* a){
-	res_t result;
-	run_kernel(rw_seq_inc(a), allowed_time, result);
-	result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t);
-	result.bytes_write = result.iters * WSS_ELEMS * sizeof(data_t);
-	return result;
+    res_t result;
+    run_kernel(rw_seq_inc(a), allowed_time, result);
+    result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t);
+    result.bytes_write = result.iters * WSS_ELEMS * sizeof(data_t);
+    return result;
 }

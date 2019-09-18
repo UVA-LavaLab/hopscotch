@@ -22,10 +22,10 @@ void r_stride(data_t* __restrict__ a){
 
 template <uint64_t stride>
 res_t run_r_stride(double allowed_time, data_t* a){
-	res_t result;
-	run_kernel(r_stride<stride>(a), allowed_time, result);
-	result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t) / stride;
-	result.bytes_write = 0;
-	return result;
+    res_t result;
+    run_kernel(r_stride<stride>(a), allowed_time, result);
+    result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t) / stride;
+    result.bytes_write = 0;
+    return result;
 }
 

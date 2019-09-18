@@ -24,9 +24,9 @@ void rw_tile(data_t* __restrict__ a, uint64_t L, uint64_t K){
 
 
 res_t run_rw_tile(double allowed_time, data_t* a, uint64_t L, uint64_t K){
-	res_t result;
-	run_kernel(rw_tile(a, L, K), allowed_time, result);
-	result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t) * L / K;
-	result.bytes_write = result.iters * WSS_ELEMS * sizeof(data_t) * L / K;
-	return result;
+    res_t result;
+    run_kernel(rw_tile(a, L, K), allowed_time, result);
+    result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t) * L / K;
+    result.bytes_write = result.iters * WSS_ELEMS * sizeof(data_t) * L / K;
+    return result;
 }

@@ -22,9 +22,9 @@ void r_rand_pchase(void** ptr){
 
 
 res_t run_r_rand_pchase(double allowed_time, void** ptr){
-	res_t result;
-	run_kernel(r_rand_pchase(ptr), allowed_time, result);
-	result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t);
-	result.bytes_write = 0;
-	return result;
+    res_t result;
+    run_kernel(r_rand_pchase(ptr), allowed_time, result);
+    result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t);
+    result.bytes_write = 0;
+    return result;
 }

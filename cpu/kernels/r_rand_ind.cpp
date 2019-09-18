@@ -21,9 +21,9 @@ void r_rand_ind(data_t* __restrict__ a){
 }
 
 res_t run_r_rand_ind(double allowed_time, data_t* a){
-	res_t result;
-	run_kernel(r_rand_ind(a), allowed_time, result);
-	result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t);
-	result.bytes_write = 0;
-	return result;
+    res_t result;
+    run_kernel(r_rand_ind(a), allowed_time, result);
+    result.bytes_read = result.iters * WSS_ELEMS * sizeof(data_t);
+    result.bytes_write = 0;
+    return result;
 }

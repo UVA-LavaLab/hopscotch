@@ -17,39 +17,39 @@
 
 // Data type of the working set
 #ifndef data_t
-#define data_t 		double
-#define ELEM_SIZE 	8
+#define data_t      double
+#define ELEM_SIZE   8
 #endif
 
 
 // Working set size = (2 ^ WSS_EXP) bytes
 // Default is 2 ^ 30 = 1GiB
 #ifndef WSS_EXP
-#define WSS_EXP			30
+#define WSS_EXP         30
 #endif
 
 
 // Working set size in bytes
-#define WSS_BYTES		(1UL << WSS_EXP)
+#define WSS_BYTES       (1UL << WSS_EXP)
 
 
 // Number of elements in working set
-#define WSS_ELEMS		(WSS_BYTES / sizeof(data_t))
+#define WSS_ELEMS       (WSS_BYTES / sizeof(data_t))
 
 
 // macro expansion helper
-#define XSTR(s)	STR(s)
-#define STR(s)	#s
+#define XSTR(s) STR(s)
+#define STR(s)  #s
 
 
 // Data structure for results
 typedef struct{
-	uint64_t iters;
-	double min_time;
-	double max_time;
-	double avg_time;
-	uint64_t bytes_read;
-	uint64_t bytes_write;
+    uint64_t iters;
+    double min_time;
+    double max_time;
+    double avg_time;
+    uint64_t bytes_read;
+    uint64_t bytes_write;
 } res_t;
 
 
@@ -87,33 +87,33 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
 //     result.max_time
 //     result.avg_time
 // Other variables of results are not changed.
-#define run_kernel(kernel, allowed_time, result)							\
-		{																	\
-			double total_time = 0;											\
-			double min_time = DBL_MAX;										\
-			double max_time = 0;											\
-			uint64_t iters = 0;												\
-																			\
-			kernel;	/*warm up*/												\
-			while(total_time < allowed_time) {								\
-				auto t_start = get_time();									\
-				kernel;														\
-				double t = get_duration(t_start);							\
-				if(t < min_time){											\
-					min_time = t;											\
-				}															\
-				if(t > max_time){											\
-					max_time = t;											\
-				}															\
-				total_time += t;											\
-				iters++;													\
-			}																\
-																			\
-			result.iters = iters;											\
-			result.min_time = min_time;										\
-			result.max_time = max_time;										\
-			result.avg_time = total_time / iters;							\
-		}
+#define run_kernel(kernel, allowed_time, result)                            \
+        {                                                                   \
+            double total_time = 0;                                          \
+            double min_time = DBL_MAX;                                      \
+            double max_time = 0;                                            \
+            uint64_t iters = 0;                                             \
+                                                                            \
+            kernel; /*warm up*/                                             \
+            while(total_time < allowed_time) {                              \
+                auto t_start = get_time();                                  \
+                kernel;                                                     \
+                double t = get_duration(t_start);                           \
+                if(t < min_time){                                           \
+                    min_time = t;                                           \
+                }                                                           \
+                if(t > max_time){                                           \
+                    max_time = t;                                           \
+                }                                                           \
+                total_time += t;                                            \
+                iters++;                                                    \
+            }                                                               \
+                                                                            \
+            result.iters = iters;                                           \
+            result.min_time = min_time;                                     \
+            result.max_time = max_time;                                     \
+            result.avg_time = total_time / iters;                           \
+        }
 
 
 

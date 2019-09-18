@@ -19,26 +19,26 @@ II. Directory Structure
 
 hopscotch/
  |
- |---cpu/								Directory containing benchmarks for memory connected to CPU.
+ |---cpu/                               Directory containing benchmarks for memory connected to CPU.
  |    |
- |    |---1_roofline/					Roofline benchmark (CPU version).
- |    |---2_bandwidth/					Benchmarks memory with different access patterns.
- |    |---3_latency/    	            Latency benchmark.
- |    |---4_cache/						Benchmark for evaluating caching.
- |    |---common/ 	        			Source code common to all benchmarks.
- |    |---include/						Common header files.
- |    |---kernels/						Common kernels. May get used by different benchmarks.
+ |    |---1_roofline/                   Roofline benchmark (CPU version).
+ |    |---2_bandwidth/                  Benchmarks memory with different access patterns.
+ |    |---3_latency/                    Latency benchmark.
+ |    |---4_cache/                      Benchmark for evaluating caching.
+ |    |---common/                       Source code common to all benchmarks.
+ |    |---include/                      Common header files.
+ |    |---kernels/                      Common kernels. May get used by different benchmarks.
  |
  |---gpu/
  |    |
- |    |---1_roofline/					Roofline benchmark (CUDA version).
- |    |---common/ 	        			Source code common to all benchmarks.
- |    |---include/						Common header files.
+ |    |---1_roofline/                   Roofline benchmark (CUDA version).
+ |    |---common/                       Source code common to all benchmarks.
+ |    |---include/                      Common header files.
  |
- |---MAPProfiler/						A tool for memory access pattern visualization.
+ |---MAPProfiler/                       A tool for memory access pattern visualization.
  |
  |---Makefile                           Top level build file.
- |---README								This file.
+ |---README                             This file.
   
 
   More details can be found on the README files inside these directories.
@@ -60,9 +60,9 @@ IV. CPU Benchmarks
   1_roofline
   ==========
     Measures the maximum attainable performance with varying arithmetic intensity.
-	
+    
     To run: ./roofline_cpu.py
-	
+    
     The python script will generate a pdf for the roofline plot. Available options can be found
     using ./roofline_cpu.py --help
 
@@ -78,15 +78,15 @@ IV. CPU Benchmarks
     HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
 
     Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
-			 b) ./bandwidth
+             b) ./bandwidth
 
 
   3_latency
   ==========
     Measures the latency with a single threaded pointer chasing kernel. Working set size is varied.
-	
+    
     To run: ./latency.py
-	
+    
     The python script will generate a pdf for the latency plot. Available options can be found
     using ./latency.py --help
   
@@ -102,7 +102,7 @@ IV. CPU Benchmarks
     HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
     
     Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
-			 b) ./cache
+             b) ./cache
 
 
 IV. GPU Benchmarks
@@ -111,15 +111,11 @@ IV. GPU Benchmarks
   ==========
     Measures the maximum attainable performance with varying arithmetic intensity.
     Supports single and double precision floating point operations.
-	
+    
     To run: ./roofline.py
-	
+    
     The python script will generate a pdf for the roofline plot. Available options can be found
     using ./roofline.py --help
 
-
-
-Copyright (c) 2019, University of Virginia
-All rights reserved.
 
 

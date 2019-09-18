@@ -23,43 +23,43 @@ RMW_TYPE   = 2
 # Argument definitions
 ###############################################################################
 parser = argparse.ArgumentParser(allow_abbrev=False, 
-					description='Memory Access Pattern Plotter ' + version_string)
+                    description='Memory Access Pattern Plotter ' + version_string)
 
 parser.add_argument('--version', action='version', version=version_string)
 
 parser.add_argument('trace_file', metavar='<trace-file>',
-					help='Trace file to plot.')
+                    help='Trace file to plot.')
 
 parser.add_argument('--min-x', type=int, default='-1', metavar='<min-x>',
-					help='Minimum value for x-axis range. Use -1 to ignore. \
-						  (default: %(default)s)')
+                    help='Minimum value for x-axis range. Use -1 to ignore. \
+                          (default: %(default)s)')
 
 parser.add_argument('--max-x', type=int, default='-1', metavar='<max-x>',
-					help='Maximum value for x-axis range. Use -1 to ignore. \
-						  (default: %(default)s)')
+                    help='Maximum value for x-axis range. Use -1 to ignore. \
+                          (default: %(default)s)')
 
 parser.add_argument('--read', type=int, choices=[0,1], default='1',
-					help='Controls read operation tracing. 0: disabled, 1: enabled (defalut).')
+                    help='Controls read operation tracing. 0: disabled, 1: enabled (defalut).')
 
 parser.add_argument('--write', type=int, choices=[0,1], default='1',
-					help='Controls write operation tracing. 0: disabled, 1: enabled (defalut).')
+                    help='Controls write operation tracing. 0: disabled, 1: enabled (defalut).')
 
 parser.add_argument('--rmw', type=int, choices=[0,1], default='1',
-					help='Controls merging of read and write to read-modify-write. \
+                    help='Controls merging of read and write to read-modify-write. \
                           0: disabled, 1: enabled (defalut).')
 
 parser.add_argument('--const', type=int, choices=[0,1], default='0',
-					help='Controls if const address accesses are plotted. \
-						  0: disabled (default), 1: enabled.')
+                    help='Controls if const address accesses are plotted. \
+                          0: disabled (default), 1: enabled.')
 
 parser.add_argument('--alpha-read', type=float, default='0.15', metavar='<alpha-read>',
-					help='Controls transparency of read points. (default: %(default)s)')
+                    help='Controls transparency of read points. (default: %(default)s)')
 
 parser.add_argument('--alpha-write', type=float, default='0.15', metavar='<alpha-write>',
-					help='Controls transparency of write points. (default: %(default)s)')
+                    help='Controls transparency of write points. (default: %(default)s)')
 
 parser.add_argument('--alpha-rmw', type=float, default='0.15', metavar='<alpha-rmw>',
-					help='Controls transparency of read-modify-write points. (default: %(default)s)')
+                    help='Controls transparency of read-modify-write points. (default: %(default)s)')
 
 args = parser.parse_args()
 
@@ -97,7 +97,7 @@ while curr_idx < args.max_x:
     curr_type = rw_type[curr_idx]
     curr_idx += 1
     
-	# apply --read arg filter
+    # apply --read arg filter
     if (args.read == 0) and (curr_type == READ_TYPE):
         continue
 
@@ -105,13 +105,13 @@ while curr_idx < args.max_x:
     if (args.write == 0) and (curr_type == WRITE_TYPE):
         continue
     
-	# apply --const filter
+    # apply --const filter
     if (args.const == 0) and (last_type == curr_type) and (last_addr == curr_addr):
         continue
 
     # apply --rmw filter
     if (args.rmw == 1) and (last_addr == curr_addr) and  \
-			(last_type == READ_TYPE) and (curr_type == WRITE_TYPE):
+            (last_type == READ_TYPE) and (curr_type == WRITE_TYPE):
         #pop previous entry
         entries['R0_W1'].pop()
         entries['Addr'].pop()

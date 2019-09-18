@@ -18,10 +18,10 @@
  ******************************************************************************/
 void* hs_alloc(size_t size){
     void* ptr = aligned_alloc(4096, size);
-	if(ptr == nullptr) {
-		fprintf(stderr, "Memory allocation of size %lu bytes failed\n", size);
+    if(ptr == nullptr) {
+        fprintf(stderr, "Memory allocation of size %lu bytes failed\n", size);
         exit(-1);
-	}
+    }
     return ptr;
 }
 
@@ -32,7 +32,7 @@ void* hs_alloc(size_t size){
  * time. Portable.
  ******************************************************************************/
 std::chrono::high_resolution_clock::time_point hs_get_time() {
-	return std::chrono::high_resolution_clock::now();
+    return std::chrono::high_resolution_clock::now();
 }
 
 
@@ -42,8 +42,8 @@ std::chrono::high_resolution_clock::time_point hs_get_time() {
  * nanosecond resoultion depending on hardware support.
  ******************************************************************************/
 double hs_duration(const std::chrono::high_resolution_clock::time_point &start) {
-	std::chrono::duration<double> t = hs_get_time() - start;
-	return t.count();
+    std::chrono::duration<double> t = hs_get_time() - start;
+    return t.count();
 }
 
 
@@ -52,9 +52,9 @@ double hs_duration(const std::chrono::high_resolution_clock::time_point &start) 
  * Initializes an array with constant value.
  ******************************************************************************/
 extern void hs_init_const(DATA_T* arr, uint64_t num_elem, const DATA_T val) {
-	#pragma omp parallel for
-	for(size_t i = 0; i < num_elem; ++i){
-		arr[i] = val;
-	}
+    #pragma omp parallel for
+    for(size_t i = 0; i < num_elem; ++i){
+        arr[i] = val;
+    }
 }
 

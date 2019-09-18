@@ -5,14 +5,14 @@ Micro-benchmark for Measuring Roofline Plot
 Use the roofline.py python wrapper to run the benchmark. By default, result plot will be save as roofline.pdf.
 
 To run with default options:
-	~$ ./roofline.py
+    ~$ ./roofline.py
 
 To see all the available options:
-	~$ ./roofline.py --help
+    ~$ ./roofline.py --help
 
 Usage
 =====
-	~$ ./roofline.py [-h] [--working-set-size X] [--ntries X] [--flop-min X]
+    ~$ ./roofline.py [-h] [--working-set-size X] [--ntries X] [--flop-min X]
                    [--flop-max X] [--flop-rate X] [--disable-sp]
                    [--disable-dp] [--plot-file X]
 
@@ -38,4 +38,4 @@ Notes:
 ======
    FLOPs per element of the kernel is determined by the --flop-min, --flop-rate and --flop-max options.
    It starts with --flop-min, and then increases at --flop-rate rate until --flop-max is reached.
-	
+    

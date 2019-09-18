@@ -4,22 +4,22 @@ import subprocess
 import shlex
 
 def build():
-	cmd = "make"
-	subprocess.run(shlex.split(cmd), check=True, stdout=subprocess.DEVNULL);
+    cmd = "make"
+    subprocess.run(shlex.split(cmd), check=True, stdout=subprocess.DEVNULL);
 
 
 def start_background(thrds):
-	cmd = "./back", str(thrds)
-	return subprocess.run(shlex.split(cmd), check=True);
+    cmd = "./back", str(thrds)
+    return subprocess.run(shlex.split(cmd), check=True);
 
 
 def stop_background(back_proc):
-	back_proc.terminate();
+    back_proc.terminate();
 
 
 def run_workload():
-	cmd = "./workload"
-	results_str = subprocess.check_output(shlex.split(cmd), universal_newlines=True)
+    cmd = "./workload"
+    results_str = subprocess.check_output(shlex.split(cmd), universal_newlines=True)
 
 
 

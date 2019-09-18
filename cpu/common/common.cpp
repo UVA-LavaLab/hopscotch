@@ -19,14 +19,14 @@
  * Print formatting
  *****************************************************************************/
 void print_bw_header(){
-	printf("=======================================================================\n");
-	printf("%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");
-	printf("=======================================================================\n");
+    printf("=======================================================================\n");
+    printf("%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");
+    printf("=======================================================================\n");
 }
 
 void print_max_bw(const char* kernel, const res_t &result){
-	printf("%-30s%-15lu%-15.2lf%-15.0lf\n", kernel, result.iters, result.iters * result.avg_time,
-		(result.bytes_read + result.bytes_write) / result.iters / result.min_time / 1e6);
+    printf("%-30s%-15lu%-15.2lf%-15.0lf\n", kernel, result.iters, result.iters * result.avg_time,
+        (result.bytes_read + result.bytes_write) / result.iters / result.min_time / 1e6);
 }
 
 
@@ -35,10 +35,10 @@ void print_max_bw(const char* kernel, const res_t &result){
  *****************************************************************************/
 void* hs_alloc(size_t size){
     void* ptr = aligned_alloc(4096, size);
-	if(ptr == nullptr) {
-		fprintf(stderr, "Memory allocation of size %lu bytes failed\n", size);
+    if(ptr == nullptr) {
+        fprintf(stderr, "Memory allocation of size %lu bytes failed\n", size);
         exit(-1);
-	}
+    }
     return ptr;
 }
 
@@ -49,7 +49,7 @@ void* hs_alloc(size_t size){
  * time. Portable.
  *****************************************************************************/
 std::chrono::high_resolution_clock::time_point get_time() {
-	return std::chrono::high_resolution_clock::now();
+    return std::chrono::high_resolution_clock::now();
 }
 
 
@@ -59,8 +59,8 @@ std::chrono::high_resolution_clock::time_point get_time() {
  * nanosecond resoultion depending on hardware support.
  *****************************************************************************/
 double get_duration(const std::chrono::high_resolution_clock::time_point &start) {
-	std::chrono::duration<double> t = get_time() - start;
-	return t.count();
+    std::chrono::duration<double> t = get_time() - start;
+    return t.count();
 }
 
 
@@ -69,23 +69,23 @@ double get_duration(const std::chrono::high_resolution_clock::time_point &start)
  * Initializes an array with constant value.
  *****************************************************************************/
 void init_const(data_t* arr, uint64_t num_elem, const data_t val) {
-	#pragma omp parallel for
-	for(uint64_t i = 0; i < num_elem; ++i){
-		arr[i] = val;
-	}
+    #pragma omp parallel for
+    for(uint64_t i = 0; i < num_elem; ++i){
+        arr[i] = val;
+    }
 }
 
 
 // Initializes an index array with [0,1,...,(num_elem-1)].
 // If suffle is true, randomize the generated array.
 void init_linear(uint64_t* arr, uint64_t num_elem, bool shuffle) {
-	#pragma omp parallel for
+    #pragma omp parallel for
     for(uint64_t i = 0; i < num_elem; ++i){
         arr[i] = i;
     }
-	if(shuffle){
-    	std::random_shuffle(arr, arr + num_elem);
-	}
+    if(shuffle){
+        std::random_shuffle(arr, arr + num_elem);
+    }
 }
 
 
