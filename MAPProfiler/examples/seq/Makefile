@@ -1,9 +1,11 @@
 .PHONY: all clean
 
-all: seq
+TARGET=seq
 
-seq: seq.c
-	gcc -g -O0 seq.c -o seq
+all: $(TARGET)
+
+$(TARGET): $(TARGET).c
+	gcc -g -O0 $(TARGET).c -o $(TARGET)
 
 clean:
-	rm -rf seq
+	rm -rf $(TARGET)

@@ -29,6 +29,6 @@ kernel: $(CMN_DIR)/common.cu $(INC_DIR)/common.h roofline.cu
 	nvcc $(CMN_DIR)/common.cu roofline.cu -o $@ $(NVCCFLAGS)
 
 clean:
-	@rm -rf query
-	@rm -rf kernel
+	rm -rf query
+	rm -rf kernel
 	

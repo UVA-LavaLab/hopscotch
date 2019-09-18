@@ -1,13 +1,35 @@
 Examples showcasing MAPProfiler usage.
 
+Build instructions
+==================
+
+	a) To build all examples, run 'make' from the current (examples) directory. e.g.,
+		$ make
+	b) To build a specific example, run 'make <example_name>' from the current directory. e.g.,
+		$ make scatter
+	c) Each example have their own makefile, which can also be uesd to build. e.g.,
+		$ cd scatter
+		$ make
+	d) To clean all examples, run 'clean' from the current directory. e.g.,
+		$ make clean
+	e) To clean a specific example, run 'make <example_name>.clean'. e.g.,
+		$ make scatter.clean
+	f) Another way of cleaning specific examples:
+		$ cd scatter
+		$ make clean
+
+
+Included examples
+=================
+
 1. openmp: 
    Multithreaded (with OpenMp) sequential read, write and read-modify-write operations.
 
 2. seq:
-   Single threaded sequential read, write and read-modify-write operations.
+   Single-threaded sequential read, write and read-modify-write operations.
 
 3. rand:
-   Single threaded rendom and sequential read, write and read-modify-write operations.
+   Single-threaded random and sequential read, write and read-modify-write operations.
 
 4. select_func:
    Example showing function selection.
@@ -19,4 +41,4 @@ Examples showcasing MAPProfiler usage.
    Scatter operation. Sequential read, random write.
 
 7. scatter_gather:
-   Scatter_gather operation. Sequential + random read, random write.
+   Scatter-gather operation. Sequential + random read, random write.

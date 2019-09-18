@@ -43,13 +43,21 @@ KNOB<UINT64> knobMaxThreads(KNOB_MODE_WRITEONCE, "pintool", "threads", "10000",
 		"Upper limit of the number of threads that can be used by the program \
 		being profiled.");
 
+// Stack based access logging (1: enable, 0: disable)
+KNOB<bool> knobStack(KNOB_MODE_WRITEONCE, "pintool", "stack", "0", "Stack based access logging \
+		[1: enable, 0: disable (default)].");
+
+// Instruction pointer relative access logging (1: enable, 0: disable)
+KNOB<bool> knobIP(KNOB_MODE_WRITEONCE, "pintool", "ip", "1", "IP relative access logging \
+		[1: enable (default), 0: disable].");
+
 // Read logging (1: enable, 0: disable)
 KNOB<bool> knobRead(KNOB_MODE_WRITEONCE, "pintool", "read", "1", "Read logging \
-		(1: enable, 0: disable).");
+		[1: enable (default), 0: disable].");
 
 // Write logging (1: enable, 0: disable)
 KNOB<bool> knobWrite(KNOB_MODE_WRITEONCE, "pintool", "write", "1", "Write \
-		logging (1: enable, 0: disable).");
+		logging [1: enable (default), 0: disable].");
 
 
 
@@ -105,7 +113,6 @@ bool read_log_en = true;
 
 // Write logging is enabled if true. Maps to knobWrite.
 bool write_log_en = true;
-
 
 
 /*******************************************************************************
@@ -169,8 +176,16 @@ VOID RecordMemWrite(THREADID tid, ADDRINT ea) {
  * Instruments instructions having read or write accesses.
  */
 VOID Instruction(INS ins, VOID *v){
-	if(INS_IsStackRead(ins) || INS_IsStackWrite(ins)){
-		return;
+	if(!knobStack.Value()){
+		if(INS_IsStackRead(ins) || INS_IsStackWrite(ins)){
+			return;
+		}
+	}
+
+	if(!knobIP.Value()){
+		if(INS_IsIpRelRead(ins) || INS_IsIpRelWrite(ins)){
+			return;
+		}
 	}
 
 	// Get the memory operand count of the current instruction.

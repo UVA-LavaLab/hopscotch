@@ -35,16 +35,17 @@ def run_bench(args):
 	latency = []
 	curr_wss = args.wss_min
 	while(curr_wss <= args.wss_max):
-		subprocess.run(shlex.split("make clean"), check=True, stdout=subprocess.DEVNULL);
-		make_cmd = 	"make kernel USER_DEF=\"-DHS_ARRAY_ELEM=" + str(curr_wss//8) + "\""
+		# make
+		make_cmd = 	"make kernel USER_DEFS=\"-DWSS_EXP=" + str(curr_wss) + "\""
 		subprocess.run(shlex.split(make_cmd), check=True, stdout=subprocess.DEVNULL);
-		#run kernel
+
+		# run kernel
 		results_str = subprocess.check_output(shlex.split("./kernel"), universal_newlines=True)
 		print(results_str, end='')
 		results_arr = results_str.split()
 		wss.append(float(results_arr[0]))
 		latency.append(float(results_arr[1]))
-		curr_wss = int(curr_wss * args.wss_rate)
+		curr_wss = curr_wss + 1
 	return wss, latency
 
 
@@ -53,14 +54,11 @@ def run_bench(args):
 ###############################################################################
 parser = argparse.ArgumentParser(allow_abbrev=False)
 
-parser.add_argument('--wss-min', default='8192', type=positive_integer, metavar='X',
-					help='Minimum working set size in byte. (default: %(default)s)')
+parser.add_argument('--wss-min', default='13', type=positive_integer, metavar='X',
+					help='Minimum working set size = (2 ^ wss_min) bytes. (default: %(default)s)')
 
-parser.add_argument('--wss-max', default='1073741824', type=positive_integer, metavar='X',
-					help='Maximum working set size in byte. (default: %(default)s)')
-
-parser.add_argument('--wss-rate', default='2', type=float, metavar='X',
-					help='Increament rate of working set size. (default: %(default)s)')
+parser.add_argument('--wss-max', default='32', type=positive_integer, metavar='X',
+					help='Maximum working set size = (2 ^ wss_max) bytes. (default: %(default)s)')
 
 parser.add_argument('--plot-file', default='latency.pdf', type=str, metavar='X',
 					help='Latency plot will be saved in this file. (default: %(default)s)')
@@ -73,9 +71,6 @@ args = parser.parse_args()
 ###############################################################################
 if (args.wss_min > args.wss_max):
 	raise argparse.ArgumentTypeError("--wss-min must be <= --wss-max.")
-
-if (args.wss_rate <= 1):
-	raise argparse.ArgumentTypeError("--wss-rate must be greater than 1.0")
 
 
 ###############################################################################

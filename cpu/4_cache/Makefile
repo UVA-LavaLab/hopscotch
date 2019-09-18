@@ -1,11 +1,12 @@
 ###############################################################################
 #
 # Makefile for building $(TARGET) benchmark. $(USER_DEFS) is used to pass the
-# definitions to the compiler.
+# definitions to the compiler. $(KERNELS) defines the kernels required by the
+# benchmark.
 #
 # Author: 	Alif Ahmed
 # email: 	alifahmed@virginia.edu
-# Updated: 	Aug 06, 2019
+# Updated: 	Sep 16, 2019
 #
 ###############################################################################
 
@@ -13,27 +14,38 @@ TARGET = cache
 
 .PHONY: all clean $(TARGET)
 
+# directories
 INC_DIR = ../include
-HEADERS = $(wildcard $(INC_DIR)/*.h)
-
 KERN_DIR = ../kernels
 CMN_DIR = ../common
-KERN_SRC = $(wildcard $(KERN_DIR)/*.cpp) $(wildcard $(CMN_DIR)/*.cpp)
-KERN_OBJ = $(KERN_SRC:.cpp=.o)
+OBJ_DIR = obj
 
-CPPFLAGS = -Ofast -fopenmp -march=native -I$(INC_DIR) -Wno-unused-variable -std=c++11 $(USER_DEF)
-	
-BENCH_SRC = $(wildcard *.cpp)
+
+# compiler flags
+CXX = g++
+CXXFLAGS = -O3 -fopenmp -march=native -I$(INC_DIR) -std=c++14 $(USER_DEFS)
+
+
+# header files
+HEADERS = $(wildcard $(INC_DIR)/*.h)
+
+
+# src files
+SRC = $(wildcard *.cpp) $(wildcard $(KERN_DIR)/*.cpp) $(wildcard $(CMN_DIR)/*.cpp)
+
+# object files
+OBJ = $(SRC:.cpp=.o)
 
 all: $(TARGET)
 	
 clean:
-	@rm -rf $(KERN_OBJ)
+	@rm -rf $(OBJ)
 	@rm -rf $(TARGET)
+	@echo "Cleaned..."
 	
 %.o: %.cpp $(HEADERS)
-	@g++ $(CPPFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(TARGET): $(KERN_OBJ) $(BENCH_SRC)
-	@g++ $(CPPFLAGS) $^ -o $@
+$(TARGET): $(OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 

@@ -1,167 +1,107 @@
-#include <sys/time.h>
+/******************************************************************************
+ *
+ * File: util.cpp
+ * Description: Utility functions.
+ * 
+ * Author: Alif Ahmed
+ * Date: Sep 16, 2019
+ *
+ *****************************************************************************/
 #include "common.h"
-#include <vector>
+#include <cstdio>
+#include <string>
+#include <chrono>
 #include <algorithm>
+#include <cstdlib>
 
-data_t* __restrict__ a = NULL;
-data_t* __restrict__ b = NULL;
-data_t* __restrict__ c = NULL;
-void** ptr = NULL;
-uint64_t* __restrict__ idx1 = NULL;
-uint64_t* __restrict__ idx2 = NULL;
 
-void* alloc_aligned_4K(uint64_t size){
-    void* ptr;
-    if(posix_memalign(&ptr, 4096, size)){
-        fprintf(stderr, "Memory allocation of size %luB failed\n", size);
+/******************************************************************************
+ * Print formatting
+ *****************************************************************************/
+void print_bw_header(){
+	printf("=======================================================================\n");
+	printf("%-30s%-15s%-15s%-15s\n", "Kernel", "Iterations", "Time (s)", "BW (MB/s)");
+	printf("=======================================================================\n");
+}
+
+void print_max_bw(const char* kernel, const res_t &result){
+	printf("%-30s%-15lu%-15.2lf%-15.0lf\n", kernel, result.iters, result.iters * result.avg_time,
+		(result.bytes_read + result.bytes_write) / result.iters / result.min_time / 1e6);
+}
+
+
+/******************************************************************************
+ * Allocates 4096 bytes aligned memory. Portable.
+ *****************************************************************************/
+void* hs_alloc(size_t size){
+    void* ptr = aligned_alloc(4096, size);
+	if(ptr == nullptr) {
+		fprintf(stderr, "Memory allocation of size %lu bytes failed\n", size);
         exit(-1);
-    }
+	}
     return ptr;
 }
 
-void alloc_a(){
-    //a = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
-    a = (data_t*)alloc_aligned_4K(HS_ARRAY_SIZE_BTYE);
+
+
+/******************************************************************************
+ * Captures current time as a time_point object. Use hs_duration() to get elapsed
+ * time. Portable.
+ *****************************************************************************/
+std::chrono::high_resolution_clock::time_point get_time() {
+	return std::chrono::high_resolution_clock::now();
 }
 
-void alloc_b(){
-    //b = (data_t*)malloc(HS_ARRAY_SIZE_BTYE);
-    b = (data_t*)alloc_aligned_4K(HS_ARRAY_SIZE_BTYE);
+
+
+/******************************************************************************
+ * Measures the elasped time (in seconds) since 'start'. Can support upto
+ * nanosecond resoultion depending on hardware support.
+ *****************************************************************************/
+double get_duration(const std::chrono::high_resolution_clock::time_point &start) {
+	std::chrono::duration<double> t = get_time() - start;
+	return t.count();
 }
 
-void alloc_ptr(){
-    //ptr = (void**)malloc(HS_ARRAY_ELEM * sizeof(void*));
-    ptr = (void**)alloc_aligned_4K(HS_ARRAY_ELEM * sizeof(void*));
+
+
+/******************************************************************************
+ * Initializes an array with constant value.
+ *****************************************************************************/
+void init_const(data_t* arr, uint64_t num_elem, const data_t val) {
+	#pragma omp parallel for
+	for(uint64_t i = 0; i < num_elem; ++i){
+		arr[i] = val;
+	}
 }
 
-void alloc_idx1(){
-    //idx1 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
-    idx1 = (uint64_t*)alloc_aligned_4K(HS_ARRAY_ELEM * sizeof(uint64_t));
-}
 
-void alloc_idx2(){
-    //idx2 = (uint64_t*)malloc(HS_ARRAY_ELEM * sizeof(uint64_t));
-    idx2 = (uint64_t*)alloc_aligned_4K(HS_ARRAY_ELEM * sizeof(uint64_t));
-}
-
-void free_a(){
-    if(a) free(a);
-}
-
-void free_b() {
-    if(b) free(b);
-}
-
-void free_ptr() {
-    if(ptr) free(ptr);
-}
-
-void free_idx1(){
-    if(idx1) free(idx1);
-}
-
-void free_idx2(){
-    if(idx2) free(idx2);
-}
-
-double get_time() {
-	struct timeval tp;
-	struct timezone tzp;
-	gettimeofday(&tp,&tzp);
-	return ( (double) tp.tv_sec + (double) tp.tv_usec * 1.e-6 );
-}
-
-double kernel_sum_time(uint64_t* iter, double (*func)(), void (*init)()) {
-    init();
-    func();             //warm up
-    double elapsed = 0;
-    uint64_t i;
-    for(i = 0; (i < ITER_MIN) || (elapsed < ITER_TIMEOUT_SEC); ++i) {
-        elapsed += func();
+// Initializes an index array with [0,1,...,(num_elem-1)].
+// If suffle is true, randomize the generated array.
+void init_linear(uint64_t* arr, uint64_t num_elem, bool shuffle) {
+	#pragma omp parallel for
+    for(uint64_t i = 0; i < num_elem; ++i){
+        arr[i] = i;
     }
-    *iter = i;
-    return elapsed;
+	if(shuffle){
+    	std::random_shuffle(arr, arr + num_elem);
+	}
 }
 
-double kernel_min_time(uint64_t* iter, double (*func)(), void (*init)()) {
-    init();
-    func();             //warm up
-    double elapsed = 0;
-    double min = DBL_MAX;
-    uint64_t i;
-    for(i = 0; (i < ITER_MIN) || (elapsed < ITER_TIMEOUT_SEC); ++i) {
-        double curr = func();
-        min = curr < min ? curr : min;
-        elapsed += curr;
-    }
-    *iter = i;
-    return min;
-}
-
-void no_init(){
-    //do nothing
-}
-
-void print_thread_num() {
-    #pragma omp parallel
-    #pragma omp single
-    printf("Number of threads = %d\n", omp_get_num_threads());
-}
-
-void default_init(){
-    #pragma omp parallel for
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
-        a[i] = 1.0;
-		b[i] = 2.0;
-        c[i] = 3.0;
-    }
-}
-
-void init_a(){
-    #pragma omp parallel for
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
-        a[i] = 1.0;
-    }
-}
-
-void init_ab(){
-    #pragma omp parallel for
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
-        a[i] = 1.0;
-		b[i] = 2.0;
-    }
-}
 
 //init pointer chasing to array 'ptr' with hamiltonian cycle
-void init_pointer_chasing() {
-    std::vector<void*> unused(HS_ARRAY_ELEM-1);
+void init_pointer_chasing(void ** ptr, uint64_t num_elem) {
+    std::vector<void*> unused(num_elem-1);
     #pragma omp parallel for
-    for(uint64_t i = 1; i < HS_ARRAY_ELEM; ++i) {
+    for(uint64_t i = 1; i < num_elem; ++i) {
         unused[i-1] = ptr + i;
     }
     std::random_shuffle(unused.begin(), unused.end());
     void** curr = ptr;
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM-1; ++i) {
+    for(uint64_t i = 0; i < num_elem-1; ++i) {
         *curr = unused[i];
         curr = (void**)unused[i];
     }
     *curr = ptr;
 }
 
-void init_idx1(){
-    #pragma omp parallel for
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
-        idx1[i] = i;
-    }
-    std::random_shuffle(idx1, idx1 + HS_ARRAY_ELEM);
-}
-
-void init_idx12(){
-    #pragma omp parallel for
-    for(uint64_t i = 0; i < HS_ARRAY_ELEM; ++i){
-        idx1[i] = i;
-        idx2[i] = i;
-    }
-    std::random_shuffle(idx1, idx1 + HS_ARRAY_ELEM);
-    std::random_shuffle(idx2, idx2 + HS_ARRAY_ELEM);
-}

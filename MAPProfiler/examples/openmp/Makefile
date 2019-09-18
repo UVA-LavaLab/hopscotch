@@ -1,9 +1,11 @@
 .PHONY: all clean
 
-all: omp
+TARGET=omp
 
-omp: omp.c
-	gcc -g -O3 omp.c -o omp -fopenmp
+all: $(TARGET)
+
+$(TARGET): $(TARGET).c
+	gcc -g -O0 $(TARGET).c -o $(TARGET) -fopenmp
 
 clean:
-	rm -rf omp
+	rm -rf $(TARGET)

@@ -1,9 +1,11 @@
 .PHONY: all clean
 
-all: scatter_gather
+TARGET=scatter_gather
 
-scatter_gather: scatter_gather.c
-	gcc -g -O0 scatter_gather.c -o scatter_gather
+all: $(TARGET)
+
+$(TARGET): $(TARGET).c
+	gcc -g -O0 $(TARGET).c -o $(TARGET)
 
 clean:
-	rm -rf scatter_gather
+	rm -rf $(TARGET)

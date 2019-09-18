@@ -34,13 +34,19 @@ def run_bench(data_type, args):
 	ai = []
 	bw = []
 	perf = []
+	if data_type == "float":
+		data_size = 4
+	elif data_type == "double":
+		data_size = 8 
 	curr_flop = args.flop_min
 	with open('.results_' + data_type + '.tmp', 'w') as file_out:
 		while(curr_flop <= args.flop_max):
-			make_cmd = 	"make kernel USER_DEFS=\"-DFLOPS_PER_ELEM=" + str(curr_flop) + " -DDATA_T_ENC=" + data_type \
-						+ " -DHS_ARRAY_SIZE_BYTE=" + str(args.working_set_size) \
-						+ " -DNTRIES=" + str(args.ntries) + "\""
+			# build kernel
+			make_cmd = 	"make kernel USER_DEFS=\"-DFLOPS_PER_ELEM=" + str(curr_flop) \
+						+ " -Ddata_t=" + data_type + " -DWSS_EXP=" + str(args.wss_exp) \
+						+ " -DELEM_SIZE=" + str(data_size) + "\""
 			subprocess.run(shlex.split(make_cmd), check=True, stdout=subprocess.DEVNULL);
+
 			#run kernel
 			results_str = subprocess.check_output(shlex.split("./kernel"), universal_newlines=True)
 			file_out.write(results_str)
@@ -58,11 +64,8 @@ def run_bench(data_type, args):
 ###############################################################################
 parser = argparse.ArgumentParser(allow_abbrev=False)
 
-parser.add_argument('--working-set-size', default='2147483648', type=positive_integer, metavar='X',
-					help='Working set size in bytes. (default: %(default)s)')
-
-parser.add_argument('--ntries', default='10', type=positive_integer, metavar='X',
-					help='Number of runs for each configuration (default: %(default)s)')
+parser.add_argument('--wss-exp', default='31', type=positive_integer, metavar='X',
+					help='Working set size = (2 ^ wss_exp) bytes. (default: %(default)s)')
 
 parser.add_argument('--flop-min', default='1', type=positive_integer, metavar='X',
 					help='Minimum value of FLOPs per data element. (default: %(default)s)')
@@ -100,7 +103,7 @@ if (args.flop_rate <= 1):
 # Run kernel and plot the results
 ###############################################################################
 print("")
-print("Working set size: " + str(args.working_set_size) + " bytes")
+print("Working set size: " + str(1 << args.wss_exp) + " bytes")
 print("================================================================================")
 print("Type         FLOP/elem           AI            BW (GB/s)          Perf (GFLOP/s)")
 print("================================================================================")
@@ -118,7 +121,7 @@ plt.grid(which='minor', axis='both', linestyle=':')
 
 # run kernel for single precision floating point
 if (args.disable_sp == False):
-	sp_ai, sp_bw, sp_perf = run_bench("1", args)
+	sp_ai, sp_bw, sp_perf = run_bench("float", args)
 	plt.plot(sp_ai, sp_perf, '-bo', label='Performance (SP)')
 	mb_sp = max(sp_perf)/max(sp_bw)
 	plt.axvline(x=mb_sp, color='b', linestyle='--', label='Machine Balance (SP)')
@@ -126,7 +129,7 @@ if (args.disable_sp == False):
 
 # run kernel for double precision floating point
 if (args.disable_dp == False):
-	dp_ai, dp_bw, dp_perf = run_bench("0", args)
+	dp_ai, dp_bw, dp_perf = run_bench("double", args)
 	plt.plot(dp_ai, dp_perf, '-r^', label='Performance (DP)')
 	mb_dp = max(dp_perf)/max(dp_bw)
 	plt.axvline(x=mb_dp, color='r', linestyle='--', label='Machine Balance (DP)')

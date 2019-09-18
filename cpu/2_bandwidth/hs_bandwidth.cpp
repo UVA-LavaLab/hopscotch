@@ -1,4 +1,4 @@
-/*******************************************************************************
+/******************************************************************************
  *
  * File: hs_bandwidth.cpp
  * Description: Measures bandwidth with different types of access patterns.
@@ -6,100 +6,110 @@
  * Author: Alif Ahmed
  * Date: Aug 06, 2019
  *
- ******************************************************************************/
+ *****************************************************************************/
 #include "common.h"
-#include "stdio.h"
+#include <cstdlib>
+
+// Stride kernels use template. Must include to use.
+#include "../kernels/r_stride.cpp"
+#include "../kernels/w_stride.cpp"
+
+
+// allowed minimum runtime of each kernel (in seconds)
+#define ALLOWED_RUNTIME		2
 
 int main(){
-    double elapsed;
-    uint64_t iter;
-    print_bw_header();
-    
-    
-    alloc_a();
-     
-    //read kernels
-    elapsed = kernel_min_time(&iter, r_seq_ind, init_a);
-    print_bw("r_seq_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_seq_reduce, init_a);
-    print_bw("r_seq_reduce", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_rand_ind, init_a);
-    print_bw("r_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_stride_2, init_a);
-    print_bw("r_stride_2", iter, elapsed, HS_ARRAY_SIZE_MB / 2 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_stride_4, init_a);
-    print_bw("r_stride_4", iter, elapsed, HS_ARRAY_SIZE_MB / 4 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_stride_8, init_a);
-    print_bw("r_stride_8", iter, elapsed, HS_ARRAY_SIZE_MB / 8 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_stride_16, init_a);
-    print_bw("r_stride_16", iter, elapsed, HS_ARRAY_SIZE_MB / 16 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, r_stride_32, init_a);
-    print_bw("r_stride_32", iter, elapsed, HS_ARRAY_SIZE_MB / 32 / elapsed);
-    
-	//write kernels
-    elapsed = kernel_min_time(&iter, w_seq_fill, init_a);
-    print_bw("w_seq_fill", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
+	res_t result;
 
-    elapsed = kernel_min_time(&iter, w_seq_memset, init_a);
-    print_bw("w_seq_memset", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
-    
-    elapsed = kernel_min_time(&iter, w_rand_ind, init_a);
-    print_bw("w_rand_ind", iter, elapsed, HS_ARRAY_SIZE_MB / elapsed);
-    
-    elapsed = kernel_min_time(&iter, w_stride_2, init_a);
-    print_bw("w_stride_2", iter, elapsed, HS_ARRAY_SIZE_MB / 2 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, w_stride_4, init_a);
-    print_bw("w_stride_4", iter, elapsed, HS_ARRAY_SIZE_MB / 4 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, w_stride_8, init_a);
-    print_bw("w_stride_8", iter, elapsed, HS_ARRAY_SIZE_MB / 8 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, w_stride_16, init_a);
-    print_bw("w_stride_16", iter, elapsed, HS_ARRAY_SIZE_MB / 16 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, w_stride_32, init_a);
-    print_bw("w_stride_32", iter, elapsed, HS_ARRAY_SIZE_MB / 32 / elapsed);
-    
+	// print result header
+	print_bw_header();
 
-	//mixed kernels
-    alloc_b();
-    
-    elapsed = kernel_min_time(&iter, rw_seq_copy, init_ab);
-    print_bw("rw_seq_copy", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
-    
-    elapsed = kernel_min_time(&iter, rw_seq_inc, init_a);
-    print_bw("rw_seq_inc", iter, elapsed, HS_ARRAY_SIZE_MB * 2 / elapsed);
+	// allocate memory for working sets and indexes
+	data_t* a = (data_t*)hs_alloc(WSS_ELEMS * sizeof(data_t));
+	data_t* b = (data_t*)hs_alloc(WSS_ELEMS * sizeof(data_t));
+	uint64_t* idx1 = (uint64_t*)hs_alloc(WSS_ELEMS * sizeof(uint64_t));
+	uint64_t* idx2 = (uint64_t*)hs_alloc(WSS_ELEMS * sizeof(uint64_t));
 
-    alloc_idx1();
+	// initialize arrays
+	init_const(a, WSS_ELEMS, 3);
+	init_const(b, WSS_ELEMS, 5);
+	init_linear(idx1, WSS_ELEMS, true);
+	init_linear(idx2, WSS_ELEMS, true);
+
+    // read kernels
+    result = run_r_seq_ind(ALLOWED_RUNTIME, a);
+	print_max_bw("r_seq_ind", result);
     
-    init_ab();
-    init_idx1();
-    elapsed = kernel_min_time(&iter, rw_scatter, no_init);
-    print_bw("rw_scatter", iter, elapsed, HS_ARRAY_SIZE_MB * 3 / elapsed);
+	result = run_r_seq_reduce(ALLOWED_RUNTIME, a);
+	print_max_bw("r_seq_reduce", result);
+
+	result = run_r_rand_ind(ALLOWED_RUNTIME, a);
+	print_max_bw("r_rand_ind", result);	
+
+	result = run_r_stride<2>(ALLOWED_RUNTIME, a);
+	print_max_bw("r_stride_2", result);
+
+	result = run_r_stride<4>(ALLOWED_RUNTIME, a);
+	print_max_bw("r_stride_4", result);
+
+	result = run_r_stride<8>(ALLOWED_RUNTIME, a);
+	print_max_bw("r_stride_8", result);
+
+	result = run_r_stride<16>(ALLOWED_RUNTIME, a);
+	print_max_bw("r_stride_16", result);
+
+	result = run_r_stride<32>(ALLOWED_RUNTIME, a);
+	print_max_bw("r_stride_32", result);
     
-    init_ab();
-    init_idx1();
-    elapsed = kernel_min_time(&iter, rw_gather, no_init);
-    print_bw("rw_gather", iter, elapsed, HS_ARRAY_SIZE_MB * 3 / elapsed);
     
-    alloc_idx2();
-    init_ab();
-    init_idx12();
-    elapsed = kernel_min_time(&iter, rw_scatter_gather, no_init);
-    print_bw("rw_scatter_gather", iter, elapsed, HS_ARRAY_SIZE_MB * 4 / elapsed);
-    
-    free_a();
-    free_b();
-    free_idx1();
-    free_idx2();
+	// write kernels
+    result = run_w_seq_fill(ALLOWED_RUNTIME, a);
+	print_max_bw("r_seq_fill", result);
+
+    result = run_w_seq_memset(ALLOWED_RUNTIME, a);
+	print_max_bw("r_seq_memset", result);
+
+    result = run_w_rand_ind(ALLOWED_RUNTIME, a);
+	print_max_bw("r_rand_ind", result);
+
+	result = run_w_stride<2>(ALLOWED_RUNTIME, a);
+	print_max_bw("w_stride_2", result);
+
+	result = run_w_stride<4>(ALLOWED_RUNTIME, a);
+	print_max_bw("w_stride_4", result);
+
+	result = run_w_stride<8>(ALLOWED_RUNTIME, a);
+	print_max_bw("w_stride_8", result);
+
+	result = run_w_stride<16>(ALLOWED_RUNTIME, a);
+	print_max_bw("w_stride_16", result);
+
+	result = run_w_stride<32>(ALLOWED_RUNTIME, a);
+	print_max_bw("w_stride_32", result);
+ 
+
+	// mixed kernels
+    result = run_rw_seq_copy(ALLOWED_RUNTIME, a, b);
+	print_max_bw("r_seq_copy", result);
+
+    result = run_rw_seq_inc(ALLOWED_RUNTIME, a);
+	print_max_bw("r_seq_inc", result);
+
+    result = run_rw_scatter(ALLOWED_RUNTIME, a, b, idx1);
+	print_max_bw("rw_scatter", result);
+
+    result = run_rw_gather(ALLOWED_RUNTIME, a, b, idx2);
+	print_max_bw("rw_gather", result);
+
+    result = run_rw_scatter_gather(ALLOWED_RUNTIME, a, b, idx1, idx2);
+	print_max_bw("rw_scatter_gather", result);
+
+
+	// deallocate
+    free(a);
+    free(b);
+    free(idx1);
+    free(idx2);
     
 	return 0;
 }

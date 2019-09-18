@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# Makefile for building roofline kernel. Used by roofline_cpu.py to build for
+# Makefile for building roofline kernel. Used by roofline.py to build for
 # different configurations. $(USER_DEFS) is used to pass the definitions to the
 # compiler.
 #
@@ -12,12 +12,18 @@
 
 .PHONY: all clean kernel
 
-CPPFLAGS += -O3 -fopenmp -std=c++14 -march=native $(USER_DEFS)
+INC_DIR = ../include
+CMN_DIR = ../common
+KERN_DIR = ../kernels
 
-all: kernel
+CXX = g++
+CXXFLAGS = -O3 -fopenmp -std=c++14 -march=native $(USER_DEFS) -I$(INC_DIR)
 
-kernel: hs_roofline.cpp common.cpp common.h
-	@g++ -o kernel hs_roofline.cpp common.cpp $(CPPFLAGS)
+all:
+	# Default target does nothing. Use roofline.py instead.
+
+kernel: hs_roofline.cpp $(CMN_DIR)/common.cpp $(KERN_DIR)/rw_roofline.cpp $(INC_DIR)/common.h
+	@$(CXX) -o kernel hs_roofline.cpp $(CMN_DIR)/common.cpp $(KERN_DIR)/rw_roofline.cpp $(CXXFLAGS)
 
 clean:
 	@rm -rf kernel

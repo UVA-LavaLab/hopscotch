@@ -1,6 +1,6 @@
 ###############################################################################
 #
-# Top level makefile. Forwards $(MAKE) calls to $(TARGETS) subdirectories.
+# Top level makefile. Forwards $(MAKE) calls to $(SUBDIRS) subdirectories.
 #
 # Author: 	Alif Ahmed
 # email: 	alifahmed@virginia.edu
@@ -8,7 +8,7 @@
 #
 ###############################################################################
 
-TARGETS = 1_roofline
+SUBDIRS = 1_roofline
 
 include ../makedir.mk
 

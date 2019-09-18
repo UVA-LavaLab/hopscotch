@@ -8,7 +8,7 @@
 #
 ###############################################################################
 
-SUBDIRS = cpu gpu
+SUBDIRS = gather openmp rand scatter scatter_gather select_func seq
 
 include makedir.mk
 

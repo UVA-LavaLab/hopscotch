@@ -1,9 +1,11 @@
 .PHONY: all clean
 
-all: select_func
+TARGET=select_func
 
-select_func: select_func.cpp
-	g++ -g -O0 select_func.cpp -o select_func
+all: $(TARGET)
+
+$(TARGET): $(TARGET).cpp
+	g++ -std=c++11 -g -O0 $(TARGET).cpp -o $(TARGET)
 
 clean:
-	rm -rf select_func
+	rm -rf $(TARGET)

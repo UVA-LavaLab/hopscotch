@@ -1,9 +1,11 @@
 .PHONY: all clean
 
-all: gather
+TARGET=gather
 
-gather: gather.c
-	gcc -g -O0 gather.c -o gather
+all: $(TARGET)
+
+$(TARGET): $(TARGET).c
+	gcc -g -O0 $(TARGET).c -o $(TARGET)
 
 clean:
-	rm -rf gather
+	rm -rf $(TARGET)

@@ -1,9 +1,11 @@
 .PHONY: all clean
 
-all: rand
+TARGET=rand
 
-rand: rand.c
-	gcc -g -O0 rand.c -o rand
+all: $(TARGET)
+
+$(TARGET): $(TARGET).c
+	gcc -g -O0 $(TARGET).c -o $(TARGET)
 
 clean:
-	rm -rf rand
+	rm -rf $(TARGET)

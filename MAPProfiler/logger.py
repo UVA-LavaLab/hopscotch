@@ -47,6 +47,14 @@ parser.add_argument('--write', type=int, choices=[0,1], default='1',
 					help='Controls write operation tracing. 0: disabled, 1: enabled \
 						  (defalut).')
 
+parser.add_argument('--stack-log', type=int, choices=[0,1], default='0',
+					help='Controls stack based access logging. 0: disabled (default), \
+						  1: enabled.')
+
+parser.add_argument('--ip-log', type=int, choices=[0,1], default='1',
+					help='Controls instruction pointer relative access logging. 0: disabled, 1: enabled \
+						  (default).')
+
 parser.add_argument('--trace-file', default='mem_trace.csv', metavar='<trace-file>',
 					help='Memory trace will be written to this file by Pin. The \
 						  file is in simple human readable csv format. (default: %(default)s)')
@@ -93,6 +101,8 @@ pin_cmd = [	args.pin_bin,
 			'-lim', str(args.trace_limit),
 			'-read', str(args.read),
 			'-write', str(args.write),
+			'-stack', str(args.stack_log),
+			'-ip', str(args.ip_log),
 			'--', args.cmd] + args.cmd_args
 print("\n================================================================================")
 print(' '.join(pin_cmd))

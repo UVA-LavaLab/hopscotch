@@ -18,9 +18,9 @@ all: $(SUBDIRS)
 clean: $(CLEAN_DIRS)
 
 $(SUBDIRS):
-	@$(MAKE) -C $@
+	@$(MAKE) -C $@ --no-print-directory
 
 $(CLEAN_DIRS): %.clean :
-	@$(MAKE) -C $* clean
+	@$(MAKE) -C $* --no-print-directory clean
 
 

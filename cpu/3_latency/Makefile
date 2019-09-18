@@ -1,39 +1,28 @@
 ###############################################################################
 #
-# Makefile for building $(TARGET) benchmark. $(USER_DEFS) is used to pass the
+# Makefile for building latency benchmark. $(USER_DEFS) is used to pass the
 # definitions to the compiler.
 #
 # Author: 	Alif Ahmed
 # email: 	alifahmed@virginia.edu
-# Updated: 	Aug 06, 2019
+# Updated: 	Sep 16, 2019
 #
 ###############################################################################
 
-TARGET = kernel
-
-.PHONY: all clean $(TARGET)
+.PHONY: all clean kernel
 
 INC_DIR = ../include
-HEADERS = $(wildcard $(INC_DIR)/*.h)
-
-KERN_DIR = ../kernels
 CMN_DIR = ../common
-KERN_SRC = $(wildcard $(KERN_DIR)/*.cpp) $(wildcard $(CMN_DIR)/*.cpp)
-KERN_OBJ = $(KERN_SRC:.cpp=.o)
+KERN_DIR = ../kernels
 
-CPPFLAGS = -Ofast -fopenmp -march=native -I$(INC_DIR) -Wno-unused-variable -std=c++11 $(USER_DEF)
-	
-BENCH_SRC = $(wildcard *.cpp)
+CXX = g++
+CXXFLAGS = -O3 -fopenmp -std=c++14 -march=native $(USER_DEFS) -I$(INC_DIR)
 
-all: $(TARGET)
-	
+all:
+	# Default target does nothing. Use latency.py instead.
+
+kernel: hs_latency.cpp $(CMN_DIR)/common.cpp $(KERN_DIR)/r_rand_pchase.cpp $(INC_DIR)/common.h
+	@$(CXX) -o kernel hs_latency.cpp $(CMN_DIR)/common.cpp $(KERN_DIR)/r_rand_pchase.cpp $(CXXFLAGS)
+
 clean:
-	@rm -rf $(KERN_OBJ)
-	@rm -rf $(TARGET)
-	
-%.o: %.cpp $(HEADERS)
-	@g++ $(CPPFLAGS) -c -o $@ $<
-
-$(TARGET): $(KERN_OBJ) $(BENCH_SRC)
-	@g++ $(CPPFLAGS) $^ -o $@
-
+	@rm -rf kernel

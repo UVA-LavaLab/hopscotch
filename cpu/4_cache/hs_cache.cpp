@@ -9,67 +9,55 @@
  *
  ******************************************************************************/
 #include "common.h"
+#include <cstdlib>
 
-
-/**
- * Initializes and runs kernel
- */
-static double kernel_min_time_2(uint64_t* iter, double (*func)(uint64_t,uint64_t), void (*init)(), uint64_t arg1, uint64_t arg2) {
-    init();
-    func(arg1, arg2);             //warm up
-    double elapsed = 0;
-    double min = DBL_MAX;
-    uint64_t i;
-    for(i = 0; (i < ITER_MIN) || (elapsed < ITER_TIMEOUT_SEC); ++i) {
-        double curr = func(arg1, arg2);
-        min = curr < min ? curr : min;
-        elapsed += curr;
-    }
-    *iter = i;
-    return min;
-}
+// allowed runtime per kernel
+#define ALLOWED_RUNTIME		3
 
 int main(){
-    double elapsed, min;
-    uint64_t iter;
 	uint64_t K, L;
+	res_t result;
+
+	//print header
 	print_bw_header();
         
-    alloc_a();
+	//allocate and initialize working set
+    data_t* a = (data_t*)hs_alloc(WSS_BYTES);
+	init_const(a, WSS_ELEMS, 7);
 
 	//spatial locality = low
 	//temporal locality = low
 	L = 1;
 	K = 32;
-	elapsed = kernel_min_time_2(&iter, rw_tile, init_a, L, K);
-    print_bw("Spatial=low, Temporal=low", iter, elapsed, HS_ARRAY_SIZE_MB * 2 * L / K / elapsed);
+	result = run_rw_tile(ALLOWED_RUNTIME, a, L, K);
+    print_max_bw("Spatial=low, Temporal=low", result);
 	
 	
 	//spatial locality = low
 	//temporal locality = high
 	L = 2;
 	K = 1;
-	elapsed = kernel_min_time_2(&iter, rw_tile, init_a, L, K);
-    print_bw("Spatial=low, Temporal=high", iter, elapsed, HS_ARRAY_SIZE_MB * 2 * L / K / elapsed);
+	result = run_rw_tile(ALLOWED_RUNTIME, a, L, K);
+    print_max_bw("Spatial=low, Temporal=high", result);
 
 
 	//spatial locality = high
 	//temporal locality = low
-	L = HS_ARRAY_ELEM;
-	K = HS_ARRAY_ELEM;
-	elapsed = kernel_min_time_2(&iter, rw_tile, init_a, L, K);
-    print_bw("Spatial=high, Temporal=low", iter, elapsed,  HS_ARRAY_SIZE_MB * 2 * L / K / elapsed);
+	L = WSS_ELEMS;
+	K = WSS_ELEMS;
+	result = run_rw_tile(ALLOWED_RUNTIME, a, L, K);
+    print_max_bw("Spatial=high, Temporal=low", result);
 
 
 	//spatial locality = high
 	//temporal locality = high
 	L = 32;
 	K = 1;
-	elapsed = kernel_min_time_2(&iter, rw_tile, init_a, L, K);
-    print_bw("Spatial=high, Temporal=high", iter, elapsed,  HS_ARRAY_SIZE_MB * 2 * L / K / elapsed);
+	result = run_rw_tile(ALLOWED_RUNTIME, a, L, K);
+    print_max_bw("Spatial=high, Temporal=high", result);
 
 
-	free_a();
+	free(a);
 
 	return 0;
 }

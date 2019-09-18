@@ -37,20 +37,18 @@ IV. Usage
   ------------------------------------------------
     logger.py is a wrapper which invokes appropriate pin tool command.
 
-	~$ ./logger.py [-h] [--version] [--pin-bin <path-to-pin-binary>]
-                 [--read {0,1}] [--write {0,1}] [--trace-file <trace-file>]
+	~$ logger.py [-h] [--version] [--pin-bin <path-to-pin-binary>]
+                 [--read {0,1}] [--write {0,1}] [--stack-log {0,1}]
+                 [--ip-log {0,1}] [--trace-file <trace-file>]
                  [--trace-limit <limit>] [--max-threads <limit>]
                  [--func <func-to-trace>]
-                 <cmd> ...
-
-    Help on the arguments is shown by -h or --help option.
+                 <cmd>
 
 	positional arguments:
 	  <cmd>                 Command for running the program being profiled.
-	  ...
 
 	optional arguments:
-	  -h, --help            show this help message and exit
+	  -h, --help            show help message and exit
 	  --version             show program's version number and exit
 	  --pin-bin <path-to-pin-binary>
 		                    Path to Intel Pin binary. If not given, derives from
@@ -61,6 +59,10 @@ IV. Usage
 		                    enabled (defalut).
 	  --write {0,1}         Controls write operation tracing. 0: disabled, 1:
 		                    enabled (defalut).
+	  --stack-log {0,1}     Controls stack based access logging. 0: disabled
+		                    (default), 1: enabled.
+	  --ip-log {0,1}        Controls instruction pointer relative access logging.
+		                    0: disabled, 1: enabled (default).
 	  --trace-file <trace-file>
 		                    Memory trace will be written to this file by Pin. The
 		                    file is in simple human readable csv format. (default:
@@ -74,6 +76,7 @@ IV. Usage
 	  --func <func-to-trace>
 		                    Function to trace. Fully qualified name should be used
 		                    for C++ functions. (default: main)
+
 
   Sample command (after building example/openmp):
     ~$ ./logger.py examples/openmp/omp
@@ -128,10 +131,5 @@ IV. Usage
     ~$ ./plotter.py mem_trace.csv
 
   This will open an interactive plot of the access pattern logged by mem_trace.csv.
-
-
-Copyright (c) 2019, University of Virginia
-All rights reserved.
-
 
 
