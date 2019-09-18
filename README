@@ -27,7 +27,7 @@ hopscotch/
  |    |---4_cache/                      Benchmark for evaluating caching.
  |    |---common/                       Source code common to all benchmarks.
  |    |---include/                      Common header files.
- |    |---kernels/                      Common kernels. May get used by different benchmarks.
+ |    |---kernels/                      Common kernels. Used by different benchmarks.
  |
  |---gpu/
  |    |
@@ -59,12 +59,12 @@ IV. CPU Benchmarks
 
   1_roofline
   ==========
-    Measures the maximum attainable performance with varying arithmetic intensity.
+    Measures the maximum attainable performance with varying arithmetic intensity and the machine balance.
     
-    To run: ./roofline_cpu.py
+    To run: ./roofline.py
     
     The python script will generate a pdf for the roofline plot. Available options can be found
-    using ./roofline_cpu.py --help
+    using ./roofline.py --help
 
 
   2_bandwidth
@@ -74,10 +74,9 @@ IV. CPU Benchmarks
     To run:  a) make
              b) ./bandwidth
 
-    Working set size can be changed by defining HS_ARRAY_ELEM, which denotes number of elements in the working set array.
-    HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
+    Working set size can be changed by defining WSS_EXP. Number of elements in the working set is (2 ^ WSS_EXP). WSS_EXP can be defined directy if manually compiling, or can be passes with USER_DEFS.
 
-    Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
+    Example: a) make USER_DEFS="-DWSS_EXP=32"
              b) ./bandwidth
 
 
@@ -98,18 +97,13 @@ IV. CPU Benchmarks
     To run:  a) make
              b) ./cache
     
-    Working set size can be changed by defining HS_ARRAY_ELEM, which denotes number of elements in the working set array.
-    HS_ARRAY_ELEM can be defined directy if manually compiling, or can be passes with USER_DEF.
     
-    Example: a) make USER_DEF="-DHS_ARRAY_ELEM=1000000"
-             b) ./cache
-
 
 IV. GPU Benchmarks
 
   1_roofline
   ==========
-    Measures the maximum attainable performance with varying arithmetic intensity.
+    Measures the maximum attainable performance with varying arithmetic intensity and the machine balance.
     Supports single and double precision floating point operations.
     
     To run: ./roofline.py
