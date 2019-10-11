@@ -91,16 +91,16 @@ typedef struct{
  * Globals
  ******************************************************************************/
 // Array that contains all the memory accesses.
-MemInfo* info = nullptr;
+MemInfo* info;
 
 // Array that keeps thread specific data for all threads.
-ThreadData* tdata = nullptr;
+ThreadData* tdata;
 
 // Limit of buffer entry. Maps to knobMaxLog.
-UINT64 buf_log_lim = 0;
+UINT64 buf_log_lim;
 
 // Current count of log entry.
-UINT64 buf_log_cnt = 0;
+UINT64 buf_log_cnt;
 
 // Name of the function that is being profiled. Maps to knobFunctionName.
 string rtn_name;
