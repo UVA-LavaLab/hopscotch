@@ -71,7 +71,10 @@ KNOB<bool> knobWrite(KNOB_MODE_WRITEONCE, "pintool", "write", "1", "Write \
 typedef struct{
     // Tracks if the thread is inside the requested functions. Greater than 0
     // means it is.
-    UINT64 rtnEntryCnt __attribute((aligned(LINE_SIZE)));
+    UINT64 rtnEntryCnt;
+
+    // padding
+    UINT8 _padding[LINE_SIZE - sizeof(UINT64)];
 } ThreadData;
 
 
@@ -79,10 +82,13 @@ typedef struct{
 // false sharing.
 typedef struct{
     // Effective virtual address
-    ADDRINT ea __attribute((aligned(LINE_SIZE)));
+    ADDRINT ea;
 
     // Type of access. 'R' for read and 'W' for write.
     UINT8 type;
+
+    // padding
+    UINT8 _padding[LINE_SIZE - sizeof(ADDRINT) - sizeof(UINT8)];
 } MemInfo;
 
 
@@ -331,7 +337,12 @@ int main(int argc, char *argv[]) {
     if(PIN_Init(argc,argv)) {
         return Usage();
     }
-    
+
+    // Check if MemInfo and ThreadData structures are properly padded.
+    // Padding is used to avoid false sharing.    
+    assert(sizeof(MemInfo) == LINE_SIZE);
+    assert(sizeof(ThreadData) == LINE_SIZE);
+
     // Initializations
     PIN_InitLock(&lock);
     PIN_InitSymbolsAlt(IFUNC_SYMBOLS);
