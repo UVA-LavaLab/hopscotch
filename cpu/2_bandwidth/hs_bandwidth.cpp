@@ -64,13 +64,13 @@ int main(){
     
     // write kernels
     result = run_w_seq_fill(ALLOWED_RUNTIME, a);
-    print_max_bw("r_seq_fill", result);
+    print_max_bw("w_seq_fill", result);
 
     result = run_w_seq_memset(ALLOWED_RUNTIME, a);
-    print_max_bw("r_seq_memset", result);
+    print_max_bw("w_seq_memset", result);
 
     result = run_w_rand_ind(ALLOWED_RUNTIME, a);
-    print_max_bw("r_rand_ind", result);
+    print_max_bw("w_rand_ind", result);
 
     result = run_w_stride<2>(ALLOWED_RUNTIME, a);
     print_max_bw("w_stride_2", result);
@@ -90,10 +90,10 @@ int main(){
 
     // mixed kernels
     result = run_rw_seq_copy(ALLOWED_RUNTIME, a, b);
-    print_max_bw("r_seq_copy", result);
+    print_max_bw("rw_seq_copy", result);
 
     result = run_rw_seq_inc(ALLOWED_RUNTIME, a);
-    print_max_bw("r_seq_inc", result);
+    print_max_bw("rw_seq_inc", result);
 
     result = run_rw_scatter(ALLOWED_RUNTIME, a, b, idx1);
     print_max_bw("rw_scatter", result);
