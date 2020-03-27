@@ -7,7 +7,7 @@
  * Date: Sep 16, 2019
  *
  *****************************************************************************/
-#include "common.h"
+#include "../include/common.h"
 #include <cfloat>
 #include <immintrin.h>
 

@@ -8,13 +8,12 @@
  * Date: Sep 16, 2019
  *
  *****************************************************************************/
-#include "common.h"
-#include <cstdio>
-#include <cstdlib>
+#include "../include/common.h"
 
-#define ALLOWED_RUNTIME 3
+#define ALLOWED_RUNTIME 4
 
 int main(){
+	printf("Latency with ALLOWED_RUNTIME=%d WSS_EXP=%d \n", ALLOWED_RUNTIME, WSS_EXP);
     // allocate and initialize pointer chain
     void** ptr = (void**)hs_alloc(WSS_ELEMS * sizeof(void*));
     init_pointer_chasing(ptr, WSS_ELEMS);

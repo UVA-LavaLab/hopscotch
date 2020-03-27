@@ -10,10 +10,19 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
+#include <stdio.h>
 #include <cstdint>
 #include <cfloat>
-#include <chrono>
+#include <cstdlib>
+#include <cstdio>
+#include <string>
+//#include <chrono>
+#include <algorithm>
+#include <vector>
 
+#include <xil_types.h>
+#include <xtmrctr.h>
+#include <xparameters.h>
 
 // Data type of the working set
 #ifndef data_t
@@ -21,65 +30,63 @@
 #define ELEM_SIZE   8
 #endif
 
-
 // Working set size = (2 ^ WSS_EXP) bytes
 // Default is 2 ^ 30 = 1GiB
 #ifndef WSS_EXP
-#define WSS_EXP         30
+#define WSS_EXP         26
 #endif
-
 
 // Working set size in bytes
 #define WSS_BYTES       (1UL << WSS_EXP)
 
-
 // Number of elements in working set
 #define WSS_ELEMS       (WSS_BYTES / sizeof(data_t))
-
 
 // macro expansion helper
 #define XSTR(s) STR(s)
 #define STR(s)  #s
 
-
 // Data structure for results
-typedef struct{
-    uint64_t iters;
-    double min_time;
-    double max_time;
-    double avg_time;
-    uint64_t bytes_read;
-    uint64_t bytes_write;
+typedef struct {
+	uint64_t iters;
+	double min_time;
+	double max_time;
+	double avg_time;
+	uint64_t bytes_read;
+	uint64_t bytes_write;
 } res_t;
-
-
 
 // Helper for print formatting
 void print_bw_header();
 void print_max_bw(const char* kernel, const res_t &result);
+void print_complete();
 
+// AXI Timer global variables
+#define CLK_FREQ XPAR_AXI_TIMER_0_CLOCK_FREQ_HZ
+
+// Xilinx AXI Timer functions
+XTmrCtr AxiTimerInit();
+unsigned int AxiTimerStart(XTmrCtr m_AxiTimer);
+unsigned int AxiTimerStop(XTmrCtr m_AxiTimer);
+double getDuration(unsigned int tStart, unsigned int tEnd);
+void output_totaltime(double total_time);
 
 // Timer functions
-std::chrono::high_resolution_clock::time_point get_time();
-double get_duration(const std::chrono::high_resolution_clock::time_point &start);
-
+//std::chrono::high_resolution_clock::time_point get_time();
+//double get_duration(const std::chrono::high_resolution_clock::time_point &start);
 
 // Allocates 4K aligned memory. Portable.
 void* hs_alloc(size_t size);
 
-
 // Initializes a data array with a constant value
 void init_const(data_t* arr, uint64_t num_elem, const data_t val);
-
 
 // Initializes an index array with [0,1,...,(num_elem-1)].
 // If suffle is true, randomize the generated array.
 void init_linear(uint64_t* arr, uint64_t num_elem, bool shuffle);
 
-
 //init pointer chasing to array 'ptr' with hamiltonian cycle
 void init_pointer_chasing(void ** ptr, uint64_t num_elem);
-
 
 // Runs kernel till allowed_time is elapsed, and then stores the following results:
 //     result.iters
@@ -93,12 +100,14 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
             double min_time = DBL_MAX;                                      \
             double max_time = 0;                                            \
             uint64_t iters = 0;                                             \
+            XTmrCtr m_AxiTimer = AxiTimerInit();                            \
                                                                             \
             kernel; /*warm up*/                                             \
             while(total_time < allowed_time) {                              \
-                auto t_start = get_time();                                  \
+                unsigned int t_start = AxiTimerStart(m_AxiTimer);           \
                 kernel;                                                     \
-                double t = get_duration(t_start);                           \
+                unsigned int t_end = AxiTimerStop(m_AxiTimer);              \
+                double t = getDuration(t_start, t_end);                     \
                 if(t < min_time){                                           \
                     min_time = t;                                           \
                 }                                                           \
@@ -106,6 +115,7 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
                     max_time = t;                                           \
                 }                                                           \
                 total_time += t;                                            \
+                /*output_totaltime(total_time);*/                               \
                 iters++;                                                    \
             }                                                               \
                                                                             \
@@ -114,8 +124,6 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
             result.max_time = max_time;                                     \
             result.avg_time = total_time / iters;                           \
         }
-
-
 
 /******************************************************************************
  * Kernels
