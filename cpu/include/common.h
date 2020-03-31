@@ -28,6 +28,11 @@
 #define WSS_EXP         30
 #endif
 
+// Minimum set size before time is measured
+// Default is 64MB
+#ifndef WSS_MIN_EXP
+#define WSS_MIN_EXP         26
+#endif
 
 // Working set size in bytes
 #define WSS_BYTES       (1UL << WSS_EXP)
@@ -93,11 +98,15 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
             double min_time = DBL_MAX;                                      \
             double max_time = 0;                                            \
             uint64_t iters = 0;                                             \
+            static const uint64_t min_iter = (WSS_MIN_EXP <= WSS_EXP) ? 1 : \
+                                   (1UL << WSS_MIN_EXP) / (1UL << WSS_EXP); \
                                                                             \
             kernel; /*warm up*/                                             \
             while(total_time < allowed_time) {                              \
                 auto t_start = get_time();                                  \
-                kernel;                                                     \
+                for(uint64_t i = 0; i < min_iter; i++) {                    \
+                    kernel;                                                 \
+                }                                                           \
                 double t = get_duration(t_start);                           \
                 if(t < min_time){                                           \
                     min_time = t;                                           \
@@ -106,7 +115,7 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
                     max_time = t;                                           \
                 }                                                           \
                 total_time += t;                                            \
-                iters++;                                                    \
+                iters += min_iter;                                          \
             }                                                               \
                                                                             \
             result.iters = iters;                                           \
