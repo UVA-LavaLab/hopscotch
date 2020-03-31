@@ -36,6 +36,13 @@
 #define WSS_EXP         26
 #endif
 
+// Minimum set size before time is measured
+// Default is 64MB
+#ifndef WSS_MIN_EXP
+#define WSS_MIN_EXP         26
+#endif
+
+
 // Working set size in bytes
 #define WSS_BYTES       (1UL << WSS_EXP)
 
@@ -101,11 +108,15 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
             double max_time = 0;                                            \
             uint64_t iters = 0;                                             \
             XTmrCtr m_AxiTimer = AxiTimerInit();                            \
+            static const uint64_t min_iter = (WSS_MIN_EXP <= WSS_EXP) ? 1 : \
+                                   (1UL << WSS_MIN_EXP) / (1UL << WSS_EXP); \
                                                                             \
             kernel; /*warm up*/                                             \
             while(total_time < allowed_time) {                              \
                 unsigned int t_start = AxiTimerStart(m_AxiTimer);           \
-                kernel;                                                     \
+                for(uint64_t i = 0; i < min_iter; i++) {                    \
+                    kernel;                                                 \
+                }                                                           \
                 unsigned int t_end = AxiTimerStop(m_AxiTimer);              \
                 double t = getDuration(t_start, t_end);                     \
                 if(t < min_time){                                           \
@@ -115,8 +126,7 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
                     max_time = t;                                           \
                 }                                                           \
                 total_time += t;                                            \
-                /*output_totaltime(total_time);*/                               \
-                iters++;                                                    \
+                iters += min_iter;                                          \
             }                                                               \
                                                                             \
             result.iters = iters;                                           \

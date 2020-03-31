@@ -11,7 +11,7 @@
 #include <cstdint>
 
 
-void r_rand_pchase(void** ptr){
+inline void r_rand_pchase(void** ptr){
     void **curr = ptr;
     void* saved_val = *ptr;
     for(uint64_t i = 0; i < WSS_ELEMS; ++i) {
