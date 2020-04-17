@@ -10,7 +10,7 @@
  *****************************************************************************/
 #include "../include/common.h"
 
-#define ALLOWED_RUNTIME 4
+#define ALLOWED_RUNTIME 8
 
 int main(){
 	printf("Latency with ALLOWED_RUNTIME=%d WSS_EXP=%d \n", ALLOWED_RUNTIME, WSS_EXP);

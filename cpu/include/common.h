@@ -33,7 +33,7 @@
 // Working set size = (2 ^ WSS_EXP) bytes
 // Default is 2 ^ 30 = 1GiB
 #ifndef WSS_EXP
-#define WSS_EXP         26
+#define WSS_EXP         4
 #endif
 
 // Minimum set size before time is measured
@@ -41,7 +41,6 @@
 #ifndef WSS_MIN_EXP
 #define WSS_MIN_EXP         26
 #endif
-
 
 // Working set size in bytes
 #define WSS_BYTES       (1UL << WSS_EXP)
@@ -153,14 +152,20 @@ extern res_t run_r_seq_reduce(double allowed_time, data_t* a);
 extern void r_tile(data_t* __restrict__ a, uint64_t L, uint64_t K);
 extern res_t run_r_tile(double allowed_time, data_t* a, uint64_t L, uint64_t K);
 
-extern void rw_gather(data_t* __restrict__ a, data_t* __restrict__ b, uint64_t* __restrict__ idx);
-extern res_t run_rw_gather(double allowed_time, data_t* a, data_t* b, uint64_t* idx);
+extern void rw_gather(data_t* __restrict__ a, data_t* __restrict__ b,
+		uint64_t* __restrict__ idx);
+extern res_t run_rw_gather(double allowed_time, data_t* a, data_t* b,
+		uint64_t* idx);
 
-extern void rw_scatter(data_t* __restrict__ a, data_t* __restrict__ b, uint64_t* __restrict__ idx);
-extern res_t run_rw_scatter(double allowed_time, data_t* a, data_t* b, uint64_t* idx);
+extern void rw_scatter(data_t* __restrict__ a, data_t* __restrict__ b,
+		uint64_t* __restrict__ idx);
+extern res_t run_rw_scatter(double allowed_time, data_t* a, data_t* b,
+		uint64_t* idx);
 
-extern void rw_scatter_gather(data_t* __restrict__ a, data_t* __restrict__ b, uint64_t* __restrict__ idx1, uint64_t* __restrict__ idx2);
-extern res_t run_rw_scatter_gather(double allowed_time, data_t* a, data_t* b, uint64_t* idx1, uint64_t* idx2);
+extern void rw_scatter_gather(data_t* __restrict__ a, data_t* __restrict__ b,
+		uint64_t* __restrict__ idx1, uint64_t* __restrict__ idx2);
+extern res_t run_rw_scatter_gather(double allowed_time, data_t* a, data_t* b,
+		uint64_t* idx1, uint64_t* idx2);
 
 extern void rw_seq_copy(data_t* __restrict__ a, data_t* __restrict__ b);
 extern res_t run_rw_seq_copy(double allowed_time, data_t* a, data_t* b);
@@ -169,7 +174,8 @@ extern void rw_seq_inc(data_t* __restrict__ a);
 extern res_t run_rw_seq_inc(double allowed_time, data_t* a);
 
 extern void rw_tile(data_t* __restrict__ a, uint64_t L, uint64_t K);
-extern res_t run_rw_tile(double allowed_time, data_t* a, uint64_t L, uint64_t K);
+extern res_t run_rw_tile(double allowed_time, data_t* a, uint64_t L,
+		uint64_t K);
 
 extern void w_rand_ind(data_t* __restrict__ a);
 extern res_t run_w_rand_ind(double allowed_time, data_t* a);
