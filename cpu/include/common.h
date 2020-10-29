@@ -129,8 +129,8 @@ void init_pointer_chasing(void ** ptr, uint64_t num_elem);
             }                                                               \
                                                                             \
             result.iters = iters;                                           \
-            result.min_time = min_time;                                     \
-            result.max_time = max_time;                                     \
+            result.min_time = min_time / min_iter;                          \
+            result.max_time = max_time / min_iter;                          \
             result.avg_time = total_time / iters;                           \
         }
 
