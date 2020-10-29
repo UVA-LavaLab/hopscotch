@@ -8,7 +8,7 @@
 #
 ###############################################################################
 
-SUBDIRS = 	1_roofline 			\
+SUBDIRS = 	1_bandwidth_test    \
 			2_bandwidth 		\
 			3_latency			\
 			4_cache

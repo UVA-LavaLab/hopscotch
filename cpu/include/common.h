@@ -25,7 +25,7 @@
 // Working set size = (2 ^ WSS_EXP) bytes
 // Default is 2 ^ 30 = 1GiB
 #ifndef WSS_EXP
-#define WSS_EXP         30
+#define WSS_EXP         26
 #endif
 
 // Minimum set size before time is measured

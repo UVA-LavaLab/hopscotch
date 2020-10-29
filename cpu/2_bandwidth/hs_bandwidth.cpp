@@ -16,7 +16,7 @@
 
 
 // allowed minimum runtime of each kernel (in seconds)
-#define ALLOWED_RUNTIME     2
+#define ALLOWED_RUNTIME     1
 
 int main(){
     res_t result;
