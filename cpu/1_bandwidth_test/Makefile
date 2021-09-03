@@ -24,7 +24,7 @@ OBJ_DIR = obj
 # compiler flags
 CXX = g++
 #CXXFLAGS = -O3 -fopenmp -march=native -I$(INC_DIR) -std=c++14 $(USER_DEFS)
-CXXFLAGS = -O3 -fopenmp -I$(INC_DIR) -std=c++14 $(USER_DEFS)
+CXXFLAGS = -O3 -I$(INC_DIR) -std=c++14 $(USER_DEFS)
 
 
 # header files

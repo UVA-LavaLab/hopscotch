@@ -13,9 +13,10 @@
 
 data_t r_seq_reduce(data_t* __restrict__ a){
     data_t sum = 0;
-    #pragma omp parallel for simd reduction(+ : sum) aligned(a)
+    volatile data_t* vol_a = a;
+    #pragma omp parallel for simd reduction(+ : sum) aligned(vol_a)
     for(uint64_t i = 0; i < WSS_ELEMS; ++i) {
-        sum += a[i];
+        sum += vol_a[i];
     }
     return sum;
 }

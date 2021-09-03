@@ -40,8 +40,8 @@ int main(){
     result = run_r_seq_ind(ALLOWED_RUNTIME, a);
     print_max_bw("r_seq_ind", result);
     
-    //result = run_r_seq_reduce(ALLOWED_RUNTIME, a);
-    //print_max_bw("r_seq_reduce", result);
+	result = run_r_seq_reduce(ALLOWED_RUNTIME, a);
+	print_max_bw("r_seq_reduce", result);
 
     //result = run_r_rand_ind(ALLOWED_RUNTIME, a);
     //print_max_bw("r_rand_ind", result); 
