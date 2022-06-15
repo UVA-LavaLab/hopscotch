@@ -35,7 +35,8 @@ void print_max_bw(const char* kernel, const res_t &result){
  * Allocates 4096 bytes aligned memory. Portable.
  *****************************************************************************/
 void* hs_alloc(size_t size){
-    void* ptr = aligned_alloc(4096, size);
+    // void* ptr = aligned_alloc(4096, size);
+	void* ptr = malloc(size);
     if(ptr == nullptr) {
         fprintf(stderr, "Memory allocation of size %lu bytes failed\n", size);
         exit(-1);

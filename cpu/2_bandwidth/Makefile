@@ -22,9 +22,10 @@ OBJ_DIR = obj
 
 
 # compiler flags
-CXX = g++
-CXXFLAGS = -O3 -fopenmp -march=native -I$(INC_DIR) -std=c++14 $(USER_DEFS)
-
+#CXX = g++
+CXX = /localtmp/sm7ed/EnDigital/riscv64gcc/bin/riscv64-unknown-elf-g++
+#CXXFLAGS = -O3 -fopenmp -march=native -I$(INC_DIR) -std=c++14 $(USER_DEFS)
+CXXFLAGS = -O3 -I$(INC_DIR) -std=c++14 $(USER_DEFS)
 
 # header files
 HEADERS = $(wildcard $(INC_DIR)/*.h)
